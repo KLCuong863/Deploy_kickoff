@@ -12,6 +12,16 @@
       "destination": "/index.html"
     }
   ],
+  "routes": [
+    {
+      "src": "/users",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/tasks",
+      "dest": "/index.html"  
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
