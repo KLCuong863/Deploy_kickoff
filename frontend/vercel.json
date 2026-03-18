@@ -4,22 +4,13 @@
   "outputDirectory": "dist/frontend",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://deploykickoff-production-a064.up.railway.app/api/:path*"
-    },
-    {
-      "source": "/users/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/tasks/:path*",
-      "destination": "/index.html"
-    },
-    {
       "source": "/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://deploykickoff-production-a064.up.railway.app/api/:path*"
     }
-
   ],
   "headers": [
     {
