@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '',  // để trống
+  apiUrl: 'https://deploykickoff-production-a064.up.railway.app',
 };
