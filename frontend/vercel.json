@@ -1,16 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/frontend/browser",
+  "outputDirectory": "dist/frontend",
   "rewrites": [
     {
       "source": "/api/:path*",
       "destination": "https://deploykickoff-production-a064.up.railway.app/api/:path*"
     },
     {
-      "source": "/:path*",
+      "source": "/users/*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "tasks/*",
       "destination": "/index.html"
     }
+
   ],
   "headers": [
     {
