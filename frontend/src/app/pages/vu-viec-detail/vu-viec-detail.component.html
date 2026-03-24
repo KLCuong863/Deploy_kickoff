@@ -1,0 +1,266 @@
+<!-- Toast -->
+@if (successMsg) {
+  <div class="sl-toast">✅ {{ successMsg }}</div>
+}
+
+@if (loading) {
+  <div style="text-align:center; padding:80px; color:#4b5563; letter-spacing:0.1em; font-size:12px; text-transform:uppercase;">
+    ĐANG TẢI HỒ SƠ...
+  </div>
+} @else if (vuViec) {
+
+<!-- Breadcrumb -->
+<div class="sl-breadcrumb">
+  <a (click)="goBack()" style="cursor:pointer;">Danh mục vụ việc</a> &nbsp;/&nbsp;
+  <span>{{ vuViec.id?.slice(0,10)?.toUpperCase() }}</span>
+</div>
+
+<!-- Page Header -->
+<div class="sl-page-header" style="align-items: flex-start; padding-bottom: 12px;">
+  <div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+      <span [class]="getTrangThaiBadge(vuViec.trangThai)" style="font-size: 10px;">{{ trangThaiLabels[vuViec.trangThai] }}</span>
+      <span [class]="getMucDoBadge(vuViec.mucDo)" style="font-size: 10px;">
+        ❗ ƯU TIÊN: {{ mucDoLabels[vuViec.mucDo].toUpperCase() }}
+      </span>
+    </div>
+    <h1 class="sl-page-title">{{ vuViec.id?.slice(0,8)?.toUpperCase() }}: {{ vuViec.tieuDe }}</h1>
+  </div>
+  <div class="sl-page-actions" style="flex-direction: column; align-items: flex-end; gap: 8px;">
+    <div style="display: flex; gap: 8px;">
+      @if (canChangeStatus()) {
+        <button class="sl-btn sl-btn-status" (click)="openStatusModal()">
+          🔄 CHUYỂN TRẠNG THÁI
+        </button>
+      }
+      <button class="sl-btn sl-btn-primary">✏ CẬP NHẬT</button>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="sl-btn sl-btn-primary sl-btn-sm">📤 XUẤT BÁO CÁO</button>
+      <button class="sl-btn sl-btn-danger sl-btn-sm">🗑 XÓA</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="sl-tabs" style="padding: 0 28px; margin-bottom: 0;">
+  <div class="sl-tab" [class.active]="activeTab === 'info'" (click)="setTab('info')">THÔNG TIN CHUNG</div>
+  <div class="sl-tab" [class.active]="activeTab === 'files'" (click)="setTab('files')">
+    TỆP ĐÍNH KÈM <span class="sl-tab-count">0</span>
+  </div>
+  <div class="sl-tab" [class.active]="activeTab === 'log'" (click)="setTab('log')">
+    LỊCH SỬ TRẠNG THÁI <span class="sl-tab-count">{{ statusLogs.length }}</span>
+  </div>
+</div>
+
+<div style="padding: 20px 28px; display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: start;">
+
+  <!-- Left Column -->
+  <div>
+    <!-- Info Tab -->
+    @if (activeTab === 'info') {
+      <div class="sl-card">
+        <div class="sl-card-header">
+          <span style="color: #3b82f6;">▌</span>
+          <span class="sl-card-title">BÀN TÓM TẮT VỤ VIỆC</span>
+        </div>
+        <div class="sl-card-body">
+          <div style="color: #cbd5e1; font-size: 14px; line-height: 1.8; white-space: pre-wrap; margin-bottom: 20px;">{{ vuViec.moTa || '(Chưa có mô tả)' }}</div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid #1e2d42; padding-top: 16px;">
+            <div>
+              <div class="sl-info-label">MÃ THAM CHIẾU HỆ THỐNG</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #60a5fa; margin-top: 4px;">
+                SENTINEL-X9-{{ vuViec.id?.slice(0,8)?.toUpperCase() }}
+              </div>
+            </div>
+            <div>
+              <div class="sl-info-label">TOẠ ĐỘ SỰ CỐ</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #e2e8f0; margin-top: 4px;">{{ vuViec.diaDiem || '—' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Files Tab -->
+    @if (activeTab === 'files') {
+      <div class="sl-card">
+        <div class="sl-card-header" style="justify-content: space-between;">
+          <span class="sl-card-title">TỆP ĐÍNH KÈM TÀI LIỆU</span>
+          <button class="sl-btn sl-btn-primary sl-btn-sm">⊕ THÊM TỆP MỚI</button>
+        </div>
+        <div class="sl-card-body">
+          <div class="sl-file-grid">
+            <div class="sl-file-card">
+              <div class="sl-file-icon">🖼</div>
+              <div>
+                <div class="sl-file-name">security_cam_0215.jpg</div>
+                <div class="sl-file-size">2.4 MB • 14/08/2026</div>
+              </div>
+            </div>
+          </div>
+          @if (!vuViec.files?.length) {
+            <div class="sl-upload-zone" style="margin-top: 16px;">
+              <div class="sl-upload-icon">⬆</div>
+              <div class="sl-upload-text">Kéo thả file hoặc <span class="sl-upload-link">chọn tệp</span></div>
+              <div class="sl-upload-hint">PDF, DOCX, XLSX, JPG, PNG — tối đa 5 files, 20MB/file</div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Status Log Tab -->
+    @if (activeTab === 'log') {
+      <div class="sl-card">
+        <div class="sl-card-header">
+          <span class="sl-card-title">LỊCH SỬ BIẾN ĐỘNG TRẠNG THÁI</span>
+        </div>
+        <div class="sl-card-body">
+          @if (statusLogs.length === 0) {
+            <div style="color: #4b5563; font-size: 12px; text-align: center; padding: 24px 0; letter-spacing: 0.1em; text-transform: uppercase;">
+              Chưa có lịch sử chuyển trạng thái
+            </div>
+          } @else {
+            <div class="sl-timeline">
+              @for (log of statusLogs; track log.id) {
+                <div class="sl-timeline-item">
+                  <div class="sl-timeline-dot active"></div>
+                  <div class="sl-timeline-content">
+                    <div class="sl-timeline-head">
+                      <span class="sl-timeline-action">THAY ĐỔI TRẠNG THÁI</span>
+                      <span class="sl-timeline-time">{{ log.changedAt }}</span>
+                    </div>
+                    <div class="sl-timeline-transitions">
+                      @if (log.tuTrangThai) {
+                        <span [class]="getTrangThaiBadge(log.tuTrangThai)" style="font-size: 10px;">{{ trangThaiLabels[log.tuTrangThai] }}</span>
+                        <span class="sl-timeline-arrow">→</span>
+                      }
+                      <span [class]="getTrangThaiBadge(log.sangTrangThai)" style="font-size: 10px;">{{ trangThaiLabels[log.sangTrangThai] }}</span>
+                    </div>
+                    @if (log.lyDo) {
+                      <div class="sl-timeline-reason">LÝ DO CHUYỂN TRẠNG THÁI</div>
+                      <div style="font-size: 13px; color: #94a3b8; margin-bottom: 6px;">{{ log.lyDo }}</div>
+                    }
+                    <div class="sl-timeline-by">👤 {{ log.changedBy?.toUpperCase?.() }}</div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          <!-- Init entry -->
+          <div class="sl-timeline-item">
+            <div class="sl-timeline-dot init"></div>
+            <div class="sl-timeline-content">
+              <div class="sl-timeline-head">
+                <span class="sl-timeline-action">KHỞI TẠO VỤ VIỆC</span>
+                <span class="sl-timeline-time">{{ vuViec.createdAt }}</span>
+              </div>
+              <div style="margin-bottom: 4px;">
+                <span class="sl-badge sl-badge-moi" style="font-size: 10px;">Mới</span>
+              </div>
+              <div class="sl-timeline-by">🤖 HỆ THỐNG TỰ ĐỘNG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Right Column: Sidebar Info -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div class="sl-card">
+      <div class="sl-card-header">
+        <span class="sl-card-title">THÔNG SỐ ĐỊNH DANH</span>
+      </div>
+      <div class="sl-card-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <div class="sl-info-label">CÁN BỘ THỤ LÝ</div>
+          <div style="font-size: 14px; font-weight: 700; color: #e2e8f0; margin-top: 4px;">Đang chỉ định</div>
+          <div style="font-size: 11px; color: #6b7280;">Sư đoàn · ANPD</div>
+        </div>
+        <div style="border-top: 1px solid #1e2d42; padding-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <div class="sl-info-label">NGÀY TẠO</div>
+            <div style="font-size: 12px; color: #e2e8f0; margin-top: 4px; font-family: monospace;">{{ formatDate(vuViec.createdAt) }}</div>
+          </div>
+          <div>
+            <div class="sl-info-label">CẬP NHẬT CUỐI</div>
+            <div style="font-size: 12px; color: #e2e8f0; margin-top: 4px; font-family: monospace;">{{ formatDate(vuViec.updatedAt) }}</div>
+          </div>
+        </div>
+        <div style="border-top: 1px solid #1e2d42; padding-top: 12px;">
+          <div class="sl-info-label">NGÀY XẢY RA</div>
+          <div style="font-size: 13px; color: #e2e8f0; margin-top: 4px; font-weight: 600;">{{ vuViec.ngayXayRa || '—' }}</div>
+        </div>
+        <div style="border-top: 1px solid #1e2d42; padding-top: 12px;">
+          <div class="sl-info-label">PHÂN LOẠI</div>
+          <div class="sl-badge sl-badge-cao" style="margin-top: 6px; font-size: 11px;">AN NINH CẤP {{ vuViec.mucDo === 'CAO' ? '1' : vuViec.mucDo === 'TRUNG_BINH' ? '2' : '3' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+}
+
+<!-- ==================== CHANGE STATUS MODAL ==================== -->
+@if (showStatusModal) {
+  <div class="sl-modal-overlay">
+    <div class="sl-modal">
+      <div class="sl-modal-header">
+        <span class="sl-modal-title">🔄 CHUYỂN TRẠNG THÁI VỤ VIỆC</span>
+        <button class="sl-modal-close" (click)="closeStatusModal()">✕</button>
+      </div>
+
+      <div class="sl-modal-body">
+        <!-- Current status -->
+        <div style="background: #0b1120; border: 1px solid #1e2d42; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em;">Trạng thái hiện tại:</span>
+          <span [class]="getTrangThaiBadge(vuViec!.trangThai)">{{ trangThaiLabels[vuViec!.trangThai] }}</span>
+        </div>
+
+        <form [formGroup]="statusForm" style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- Target status -->
+          <div class="sl-form-group">
+            <label class="sl-form-label">CHUYỂN SANG TRẠNG THÁI <span class="sl-required">*</span></label>
+            <div class="sl-status-choice">
+              @for (next of allowedNextStatuses; track next) {
+                <label class="sl-status-option" [class.selected]="sf['sang_trang_thai'].value === next">
+                  <input type="radio" formControlName="sang_trang_thai" [value]="next">
+                  <div>
+                    <span [class]="getTrangThaiBadge(next)" style="font-size: 10px;">{{ trangThaiLabels[next] }}</span>
+                  </div>
+                </label>
+              }
+            </div>
+            @if (sf['sang_trang_thai'].invalid && sf['sang_trang_thai'].touched) {
+              <div class="sl-form-error">✕ Vui lòng chọn trạng thái đích</div>
+            }
+          </div>
+
+          <!-- Reason -->
+          <div class="sl-form-group">
+            <label class="sl-form-label">
+              LÝ DO <span class="sl-required">*</span>
+              <span style="font-weight: 400; color: #4b5563; font-size: 10px; margin-left: 6px;">(TỐI THIỂU 20 KÝ TỰ)</span>
+            </label>
+            <textarea class="sl-textarea" formControlName="ly_do" rows="4"
+              placeholder="Nhập lý do chuyển trạng thái (bắt buộc, tối thiểu 20 ký tự)..."></textarea>
+            @if (sf['ly_do'].invalid && sf['ly_do'].touched) {
+              <div class="sl-form-error">✕ Lý do bắt buộc và tối thiểu 20 ký tự</div>
+            }
+            <div class="sl-form-hint">{{ sf['ly_do'].value?.length || 0 }} / 20 ký tự tối thiểu</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="sl-modal-footer">
+        <button class="sl-btn sl-btn-primary" (click)="closeStatusModal()">HỦY BỎ</button>
+        <button class="sl-btn sl-btn-dark" (click)="confirmStatusChange()">✅ XÁC NHẬN CHUYỂN</button>
+      </div>
+    </div>
+  </div>
+}

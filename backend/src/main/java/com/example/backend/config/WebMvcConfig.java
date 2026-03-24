@@ -10,7 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOriginPatterns("https://deploy-kickoff-cgov0xr4n-klcuong863s-projects.vercel.app")
+                .allowedOriginPatterns("https://deploy-kickoff-cgov0xr4n-klcuong863s-projects.vercel.app", "*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

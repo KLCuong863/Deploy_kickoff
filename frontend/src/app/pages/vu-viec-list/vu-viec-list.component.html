@@ -1,0 +1,310 @@
+<!-- Toast -->
+@if (successMsg) {
+  <div class="sl-toast">✅ {{ successMsg }}</div>
+}
+
+<!-- Breadcrumb -->
+<div class="sl-breadcrumb">
+  <a routerLink="/">Dashboard</a> &nbsp;/&nbsp;
+  <span>Cases / Management</span>
+</div>
+
+<!-- Page Header -->
+<div class="sl-page-header">
+  <div>
+    <div class="sl-page-title">Danh sách vụ việc</div>
+  </div>
+  <div class="sl-page-actions">
+    <button class="sl-btn sl-btn-primary">
+      📥 Nhập Excel
+    </button>
+    <button class="sl-btn sl-btn-dark" (click)="openCreate()">
+      ＋ Thêm mới
+    </button>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="sl-filter-bar">
+  <div class="sl-filter-grid">
+    <div class="sl-filter-group">
+      <div class="sl-filter-label">Loại vụ việc</div>
+      <div class="sl-select-wrap">
+        <select class="sl-select" [(ngModel)]="filterLoai">
+          <option value="">Tất cả các loại</option>
+          @for (l of loaiOptions; track l.id) {
+            <option [value]="l.ten">{{ l.ten }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="sl-filter-group">
+      <div class="sl-filter-label">Mức độ</div>
+      <div class="sl-select-wrap">
+        <select class="sl-select" [(ngModel)]="filterMucDo">
+          <option value="">Tất cả mức độ</option>
+          <option value="CAO">Cao (Nghiêm trọng)</option>
+          <option value="TRUNG_BINH">Trung bình</option>
+          <option value="THAP">Thấp</option>
+        </select>
+      </div>
+    </div>
+    <div class="sl-filter-group">
+      <div class="sl-filter-label">Trạng thái</div>
+      <div class="sl-select-wrap">
+        <select class="sl-select" [(ngModel)]="filterTrangThai">
+          <option value="">Mọi trạng thái</option>
+          <option value="MOI">Mới</option>
+          <option value="DANG_XU_LY">Đang xử lý</option>
+          <option value="CHO_DUYET">Chờ duyệt</option>
+          <option value="DA_KET_THUC">Đã kết thúc</option>
+        </select>
+      </div>
+    </div>
+    <div class="sl-filter-group" style="flex: 1; min-width: 200px;">
+      <div class="sl-filter-label">Tìm kiếm</div>
+      <input class="sl-input" [(ngModel)]="filterSearch" type="text" placeholder="Quick search by title...">
+    </div>
+    <div class="sl-filter-actions">
+      <button class="sl-btn sl-btn-primary sl-btn-sm" (click)="resetFilter()">ĐẶT LẠI</button>
+      <button class="sl-btn sl-btn-dark" (click)="applyFilter()">≡ Lọc kết quả</button>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="sl-table-container">
+  @if (loading) {
+    <div style="text-align:center; padding: 48px; color: #4b5563; font-size: 13px; letter-spacing: 0.1em;">
+      ĐANG TẢI DỮ LIỆU...
+    </div>
+  } @else if (vuViecs.length === 0) {
+    <div style="text-align:center; padding: 64px; color: #374151;">
+      <div style="font-size: 32px; margin-bottom: 12px;">📭</div>
+      <div style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Không có vụ việc nào</div>
+    </div>
+  } @else {
+    <table class="sl-table">
+      <thead>
+        <tr>
+          <th style="width: 32px;"><input type="checkbox"></th>
+          <th>STT</th>
+          <th>MÃ VỤ VIỆC</th>
+          <th>TIÊU ĐỀ VỤ VIỆC</th>
+          <th>LOẠI</th>
+          <th>MỨC ĐỘ</th>
+          <th>TRẠNG THÁI</th>
+          <th>ĐƠN VỊ</th>
+          <th>NGÀY XẢY RA</th>
+          <th>THAO TÁC</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (v of vuViecs; track v.id; let i = $index) {
+          <tr (click)="navigateToDetail(v.id!)">
+            <td><input type="checkbox" (click)="$event.stopPropagation()"></td>
+            <td style="color: #4b5563; font-size: 12px; font-weight: 700;">{{ padNum(i + 1, 2) }}</td>
+            <td>
+              <div class="sl-case-id">{{ 'CASE-2025-' + padNum(i + 1, 3) }}</div>
+              <div class="sl-case-sub">#SENT-{{ v.id?.slice(0,6)?.toUpperCase() }}</div>
+            </td>
+            <td>
+              <div class="sl-case-title">{{ v.tieuDe }}</div>
+            </td>
+            <td style="color: #6b7280; font-size: 12px;">{{ v.loaiVuViecTen || '—' }}</td>
+            <td>
+              <span [class]="getMucDoBadge(v.mucDo)">{{ getMucDoLabel(v.mucDo) }}</span>
+            </td>
+            <td>
+              <span [class]="getTrangThaiBadge(v.trangThai)">{{ trangThaiLabels[v.trangThai] }}</span>
+            </td>
+            <td style="font-size: 12px; color: #6b7280;">—</td>
+            <td style="font-size: 12px; color: #6b7280; font-family: 'JetBrains Mono', monospace;">{{ v.ngayXayRa || '—' }}</td>
+            <td>
+              <button class="sl-btn sl-btn-primary sl-btn-sm" (click)="navigateToDetail(v.id!); $event.stopPropagation()">
+                Chi tiết →
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="sl-pagination">
+      <span>Hiển thị 1-{{ vuViecs.length }} trong số {{ totalElements }} vụ việc</span>
+      <div class="sl-page-btns">
+        <button class="sl-page-btn">‹</button>
+        <button class="sl-page-btn active">1</button>
+        <button class="sl-page-btn">›</button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Stats Bar -->
+<div class="sl-stats-bar" style="margin-top: 16px;">
+  <div class="sl-stat-card">
+    <div class="sl-stat-tag">HIỆN TẠI</div>
+    <div class="sl-stat-val">{{ vuViecs.length }}</div>
+    <div class="sl-stat-label">VỤ VIỆC ĐANG XỬ LÝ</div>
+  </div>
+  <div class="sl-stat-card warning">
+    <div class="sl-stat-tag">CẢNH BÁO</div>
+    <div class="sl-stat-val">{{ vuViecs.length }}</div>
+    <div class="sl-stat-label">MỨC ĐỘ CAO CHƯA GIẢI QUYẾT</div>
+  </div>
+  <div class="sl-stat-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 14px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px;">Hệ thống báo cáo Sentinel</div>
+      <div style="font-size: 12px; color: #6b7280; line-height: 1.5;">Truy cập vào trung tâm phân tích để xem biểu đồ xu hướng và báo cáo tổng hợp cấp quản khu.</div>
+    </div>
+    <button class="sl-btn sl-btn-primary sl-btn-sm" style="align-self: flex-start; margin-top: 12px;">
+      XEM BÁO CÁO PHÂN TÍCH →
+    </button>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="sl-footer-bar" style="margin-top: 16px;">
+  <div class="sl-footer-status">
+    <span><span class="sl-status-dot"></span>PHÂN LOẠI: TỐI MẬT (CLASSIFIED - LEVEL 4)</span>
+  </div>
+  <span>Sử dụng Hệ thống Sentinel Ledger v2.4.1 | Đơn vị: Sư đoàn 304</span>
+</div>
+
+<!-- ==================== CREATE MODAL ==================== -->
+@if (showModal) {
+  <div class="sl-modal-overlay">
+    <div class="sl-modal" style="max-width: 700px; max-height: 92vh;">
+      <div class="sl-modal-header">
+        <span class="sl-modal-title">📋 THÊM MỚI VỤ VIỆC</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="sl-badge sl-badge-moi" style="font-size: 10px;">TRẠNG THÁI: MỚI</span>
+          <span style="font-size: 11px; color: #4b5563;">Tự động khi tạo hồ sơ</span>
+          <button class="sl-modal-close" (click)="closeModal()">✕</button>
+        </div>
+      </div>
+
+      <div class="sl-modal-body" style="padding: 0; background: #0b1120;">
+        <form [formGroup]="createForm">
+
+          <!-- Section 1: Basic Info -->
+          <div style="border-bottom: 1px solid #1e2d42;">
+            <div class="sl-section-head" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid #1e2d42;">
+              <div class="sl-section-num">1</div>
+              <span class="sl-section-label">THÔNG TIN CƠ BẢN</span>
+            </div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+              <!-- Tieu de -->
+              <div class="sl-form-group">
+                <label class="sl-form-label">TIÊU ĐỀ VỤ VIỆC <span class="sl-required">*</span></label>
+                <input class="sl-input" formControlName="tieu_de" type="text" maxlength="255"
+                  placeholder="Nhập tên tiêu đề để ngắn gọn, súc tích...">
+                <div class="sl-form-hint">Gợi ý: Bao gồm loại sự việc và vị trí (VD: Mất tài sản tại khu K52)</div>
+                @if (f['tieu_de'].invalid && f['tieu_de'].touched) {
+                  <div class="sl-form-error">✕ Tiêu đề không được bỏ trống (tối đa 255 ký tự)</div>
+                }
+              </div>
+
+              <!-- Loai + Muc do row -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="sl-form-group">
+                  <label class="sl-form-label">LOẠI VỤ VIỆC <span class="sl-required">*</span></label>
+                  <div class="sl-select-wrap">
+                    <select class="sl-select" formControlName="loai_vu_viec">
+                      <option value="">-- Chọn phân loại --</option>
+                      @for (l of loaiOptions; track l.id) {
+                        <option [value]="l.ten">{{ l.ten }}</option>
+                      }
+                    </select>
+                  </div>
+                  @if (f['loai_vu_viec'].invalid && f['loai_vu_viec'].touched) {
+                    <div class="sl-form-error">✕ Vui lòng chọn loại vụ việc</div>
+                  }
+                </div>
+                <div class="sl-form-group">
+                  <label class="sl-form-label">MỨC ĐỘ <span class="sl-required">*</span></label>
+                  <div class="sl-muc-do-group">
+                    <button type="button" class="sl-muc-do-btn"
+                      [class.active-thap]="selectedMucDo === 'THAP'" (click)="selectMucDo('THAP')">THẤP</button>
+                    <button type="button" class="sl-muc-do-btn"
+                      [class.active-tb]="selectedMucDo === 'TRUNG_BINH'" (click)="selectMucDo('TRUNG_BINH')">TRUNG BÌNH</button>
+                    <button type="button" class="sl-muc-do-btn"
+                      [class.active-cao]="selectedMucDo === 'CAO'" (click)="selectMucDo('CAO')">NGHIÊM TRỌNG</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ngay + Dia diem -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="sl-form-group">
+                  <label class="sl-form-label">NGÀY XẢY RA <span class="sl-required">*</span></label>
+                  <input class="sl-input" formControlName="ngay_xay_ra" type="date" [max]="today()">
+                  @if (f['ngay_xay_ra'].invalid && f['ngay_xay_ra'].touched) {
+                    <div class="sl-form-error">✕ Ngày xảy ra không được bỏ trống</div>
+                  }
+                </div>
+                <div class="sl-form-group">
+                  <label class="sl-form-label">ĐỊA ĐIỂM <span class="sl-required">*</span></label>
+                  <input class="sl-input" formControlName="dia_diem" type="text" placeholder="Tọa độ hoặc tên phân khu...">
+                </div>
+              </div>
+
+              <!-- Don vi (readonly) -->
+              <div class="sl-form-group">
+                <label class="sl-form-label">ĐƠN VỊ XẢY RA</label>
+                <input class="sl-input" type="text" value="Sư đoàn 304" readonly>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Chi tiet & ho so -->
+          <div style="border-bottom: 1px solid #1e2d42;">
+            <div class="sl-section-head" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid #1e2d42;">
+              <div class="sl-section-num">2</div>
+              <span class="sl-section-label">CHI TIẾT & HỒ SƠ</span>
+            </div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+              <div class="sl-form-group">
+                <label class="sl-form-label">MÔ TẢ CHI TIẾT VỤ VIỆC <span class="sl-required">*</span></label>
+                <textarea class="sl-textarea" formControlName="mo_ta" rows="6" maxlength="10000"
+                  placeholder="Tường thuật chi tiết diễn biến, các đối tượng liên quan và hậu quả ban đầu..."></textarea>
+                @if (f['mo_ta'].invalid && f['mo_ta'].touched) {
+                  <div class="sl-form-error">✕ Mô tả không được bỏ trống (tối đa 10.000 ký tự)</div>
+                }
+              </div>
+              <div class="sl-form-group">
+                <label class="sl-form-label">FILE ĐÍNH KÈM (TỐI ĐA 5 FILES, &lt; 20MB)</label>
+                <div class="sl-upload-zone">
+                  <div class="sl-upload-icon">⬆</div>
+                  <div class="sl-upload-text">Kéo thả file vào đây hoặc <span class="sl-upload-link">chọn tệp từ máy tính</span></div>
+                  <div class="sl-upload-hint">Định dạng hỗ trợ: PDF, DOCX, XLSX, JPG, PNG</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Ghi chu -->
+          <div>
+            <div class="sl-section-head" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid #1e2d42;">
+              <div class="sl-section-num">3</div>
+              <span class="sl-section-label">GHI CHÚ & CHỈ ĐẠO</span>
+            </div>
+            <div style="padding: 20px;">
+              <div class="sl-form-group">
+                <textarea class="sl-textarea" formControlName="ghi_chu" rows="3" maxlength="500"
+                  placeholder="Ghi chú thêm cho người xử lý hoặc ý kiến chỉ đạo ban đầu của cấp trên..."></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="sl-modal-footer" style="justify-content: space-between;">
+        <button class="sl-btn sl-btn-primary" (click)="closeModal()">HỦY BỎ THAO TÁC</button>
+        <button class="sl-btn sl-btn-dark" (click)="saveVuViec()">
+          💾 LƯU VỤ VIỆC VÀO HỆ THỐNG
+        </button>
+      </div>
+    </div>
+  </div>
+}
