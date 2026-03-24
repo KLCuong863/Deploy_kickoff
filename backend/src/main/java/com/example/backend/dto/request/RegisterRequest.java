@@ -4,11 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.util.UUID;
-import jakarta.validation.constraints.NotNull;
 
 @Data
-public class UserRequest {
+public class RegisterRequest {
 
     @NotBlank(message = "Name cannot be blank")
     private String name;
@@ -20,10 +18,8 @@ public class UserRequest {
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    @NotNull(message = "Role ID cannot be null")
-    private Integer roleId;
+    @NotBlank(message = "Role cannot be blank")
+    private String role;
 
-    private UUID departmentId;
-
-    private String status;
+    private String department;
 }

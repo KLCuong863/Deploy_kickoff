@@ -1,5 +1,6 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.dto.request.ChangePasswordRequest;
 import com.example.backend.dto.request.UserRequest;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.User;
@@ -7,6 +8,7 @@ import com.example.backend.mapper.UserMapper;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.backend.exception.*;
 
@@ -18,13 +20,14 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(UserMapper::toResponse)
-                .toList();
+                .toList(); // Java 17 đẹp hơn
     }
 
     @Override
@@ -63,12 +66,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID id) {
-
+    public void changePassword(UUID id, ChangePasswordRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with id = " + id));
 
-        userRepository.delete(user);
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BadRequestException("Mật khẩu cũ không chính xác");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

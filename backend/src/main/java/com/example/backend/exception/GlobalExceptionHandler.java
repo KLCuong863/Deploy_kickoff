@@ -2,6 +2,7 @@ package com.example.backend.exception;
 
 import com.example.backend.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,17 @@ public class GlobalExceptionHandler {
                 .status(400)
                 .message("Validation failed")
                 .error(error)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleBadCredentials(BadCredentialsException ex) {
+        return ErrorResponse.builder()
+                .status(401)
+                .message("Unauthorized")
+                .error("Email hoặc mật khẩu không chính xác")
                 .timestamp(LocalDateTime.now())
                 .build();
     }

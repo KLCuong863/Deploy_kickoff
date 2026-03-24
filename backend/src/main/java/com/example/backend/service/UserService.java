@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.request.ChangePasswordRequest;
 import com.example.backend.dto.request.UserRequest;
 import com.example.backend.dto.response.UserResponse;
 
@@ -14,9 +15,9 @@ public interface UserService {
 
     UserResponse getUserById(UUID id);
 
-    UserResponse updateUser(UUID id, @Valid UserRequest request);
-
-    void deleteUser(UUID id);
+    UserResponse updateUser(UUID id, UserRequest request);
 
     UserResponse createUser(@Valid UserRequest request);
+
+    void changePassword(UUID id, ChangePasswordRequest request);
 }

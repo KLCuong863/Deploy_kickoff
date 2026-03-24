@@ -4,7 +4,7 @@ import com.example.backend.dto.request.UserRequest;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.User;
 
-
+import java.time.LocalDateTime;
 
 public class UserMapper {
 
@@ -16,8 +16,9 @@ public class UserMapper {
         user.setPassword(request.getPassword());
         user.setRoleId(request.getRoleId());
         user.setDepartmentId(request.getDepartmentId());
-        user.setCreatedBy(request.getCreatedBy());
         user.setStatus(request.getStatus() != null ? request.getStatus() : "ACTIVE");
+        user.setCreatedAt(LocalDateTime.now());
+        // createdBy should probably be set by the service using SecurityContext, assuming null for now or passed somehow if needed
 
         return user;
     }
@@ -30,22 +31,26 @@ public class UserMapper {
                 .email(user.getEmail())
                 .roleId(user.getRoleId())
                 .departmentId(user.getDepartmentId())
-                .createdBy(user.getCreatedBy())
                 .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .createdBy(user.getCreatedBy())
                 .build();
     }
 
     public static void updateEntity(User user, UserRequest request) {
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRoleId(request.getRoleId());
-        user.setDepartmentId(request.getDepartmentId());
-        user.setCreatedBy(request.getCreatedBy());
-        if (request.getStatus() != null) {
+        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            user.setName(request.getName());
+        }
+        if (request.getRoleId() != null) {
+            user.setRoleId(request.getRoleId());
+        }
+        if (request.getDepartmentId() != null) {
+            user.setDepartmentId(request.getDepartmentId());
+        }
+        if (request.getStatus() != null && !request.getStatus().trim().isEmpty()) {
             user.setStatus(request.getStatus());
         }
+        user.setUpdatedAt(LocalDateTime.now());
     }
 }

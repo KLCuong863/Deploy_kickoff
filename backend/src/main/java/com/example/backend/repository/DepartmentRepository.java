@@ -1,6 +1,6 @@
 package com.example.backend.repository;
 
-import com.example.backend.entity.User;
+import com.example.backend.entity.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmail(String email);
-    boolean existsByEmail(String email);
+public interface DepartmentRepository extends JpaRepository<Department, UUID> {
+    Optional<Department> findByNameIgnoreCase(String name);
 }

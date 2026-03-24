@@ -16,7 +16,8 @@ public class BackendApplication {
 		System.setProperty("JPA_DDL_AUTO", dotenv.get("JPA_DDL_AUTO", "update"));
 		System.setProperty("JPA_SHOW_SQL", dotenv.get("JPA_SHOW_SQL", "true"));
 		System.setProperty("SERVER_PORT", dotenv.get("SERVER_PORT", "8080"));
-
+		System.setProperty("APP_JWT_SECRET", dotenv.get("APP_JWT_SECRET"));
+		System.setProperty("APP_JWT_EXPIRATION_MS", dotenv.get("APP_JWT_EXPIRATION_MS", "3600000"));
 		SpringApplication.run(BackendApplication.class, args);
 	}
 

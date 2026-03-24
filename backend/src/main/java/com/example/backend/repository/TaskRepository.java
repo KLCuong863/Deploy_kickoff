@@ -12,14 +12,12 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
-    List<Task> findByUserId(UUID userId);
-    List<Task> findByUserIdAndStatus(UUID userId, TaskStatus status);
-    boolean existsByIdAndUserId(Long taskId, UUID userId);
-
+    List<Task> findByUserId(Long userId);
+    List<Task> findByUserIdAndStatus(Long userId, TaskStatus status);
+    boolean existsByIdAndUserId(Long taskId, Long userId);
 
     @Modifying
     @Query("UPDATE Task t SET t.status = com.example.backend.entity.Task.TaskStatus.OVERDUE " +

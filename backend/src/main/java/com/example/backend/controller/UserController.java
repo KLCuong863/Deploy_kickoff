@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.example.backend.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import com.example.backend.dto.request.ChangePasswordRequest;
 import com.example.backend.dto.request.UserRequest;
 import com.example.backend.dto.response.ApiResponse;
 import com.example.backend.dto.response.UserResponse;
@@ -23,7 +27,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -48,16 +52,27 @@ public class UserController {
     @PutMapping("/{id}")
     public ApiResponse<UserResponse> updateUser(
             @PathVariable("id") UUID id,
-            @Valid @RequestBody UserRequest request) {
+            @RequestBody UserRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        if (!userDetails.getUser().getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền cập nhật thông tin người dùng khác");
+        }
 
         return ApiResponse.success("User updated", userService.updateUser(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteUser(@PathVariable("id") UUID id) {
-        userService.deleteUser(id);
+    @PutMapping("/{id}/password")
+    public ApiResponse<Void> changePassword(
+            @PathVariable("id") UUID id,
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        return ApiResponse.success("User deleted", null);
+        if (!userDetails.getUser().getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền đổi mật khẩu của người dùng khác");
+        }
+
+        userService.changePassword(id, request);
+        return ApiResponse.success("Password changed successfully", null);
     }
 }
-
