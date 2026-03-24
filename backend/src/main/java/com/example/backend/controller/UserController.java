@@ -30,30 +30,18 @@ public class UserController {
 
     @GetMapping
     public ApiResponse<List<UserResponse>> getUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .status(200)
-                .message("Get users success")
-                .data(userService.getAllUsers())
-                .build();
+        return ApiResponse.success("Get users success", userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getUser(@PathVariable("id") Long id) {
-        return ApiResponse.<UserResponse>builder()
-                .status(200)
-                .message("Get user success")
-                .data(userService.getUserById(id))
-                .build();
+        return ApiResponse.success("Get user success", userService.getUserById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-        return ApiResponse.<UserResponse>builder()
-                .status(201)
-                .message("User created")
-                .data(userService.createUser(request))
-                .build();
+        return ApiResponse.success("User created", userService.createUser(request));
     }
 
     @PutMapping("/{id}")
@@ -61,21 +49,13 @@ public class UserController {
             @PathVariable("id") Long id,
             @Valid @RequestBody UserRequest request) {
 
-        return ApiResponse.<UserResponse>builder()
-                .status(200)
-                .message("User updated")
-                .data(userService.updateUser(id, request))
-                .build();
+        return ApiResponse.success("User updated", userService.updateUser(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
 
-        return ApiResponse.<Void>builder()
-                .status(204)
-                .message("User deleted")
-                .data(null)
-                .build();
+        return ApiResponse.success("User deleted", null);
     }
 }

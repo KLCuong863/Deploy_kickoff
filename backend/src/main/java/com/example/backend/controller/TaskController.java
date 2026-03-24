@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend.common.ApiResponse;
+import com.example.backend.dto.response.ApiResponse;
 import com.example.backend.dto.request.CreateTaskRequest;
 import com.example.backend.dto.request.UpdateTaskRequest;
 import com.example.backend.dto.response.TaskResponse;
