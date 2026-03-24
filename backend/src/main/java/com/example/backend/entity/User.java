@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -17,21 +19,38 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NotBlank(message = "Name is mandatory")
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @NotBlank(message = "Email is mandatory")
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(nullable = false, length = 50)
-    private String role;
+    @NotBlank(message = "Password is mandatory")
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @Column(name = "role_id", nullable = false)
+    private Integer roleId;
+
+    @Column(name = "department_id")
+    private UUID departmentId;
+
+    @Column(name = "created_by")
+    private UUID createdBy;
+
+    @Column(length = 50)
+    private String status = "ACTIVE";
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

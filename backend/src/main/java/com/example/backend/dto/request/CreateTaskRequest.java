@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 public class CreateTaskRequest {
@@ -28,5 +29,5 @@ public class CreateTaskRequest {
     private LocalTime dueTime;
 
     @NotNull(message = "userId is required")
-    private Long userId;
+    private UUID userId;
 }

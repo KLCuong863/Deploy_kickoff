@@ -8,6 +8,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -21,6 +22,6 @@ public class TaskResponse {
     private LocalTime dueTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long userId;
+    private UUID userId;
     private String userName;
 }

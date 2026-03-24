@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<UserResponse> getUser(@PathVariable("id") Long id) {
+    public ApiResponse<UserResponse> getUser(@PathVariable("id") UUID id) {
         return ApiResponse.success("Get user success", userService.getUserById(id));
     }
 
@@ -46,16 +47,17 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ApiResponse<UserResponse> updateUser(
-            @PathVariable("id") Long id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UserRequest request) {
 
         return ApiResponse.success("User updated", userService.updateUser(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteUser(@PathVariable("id") Long id) {
+    public ApiResponse<Void> deleteUser(@PathVariable("id") UUID id) {
         userService.deleteUser(id);
 
         return ApiResponse.success("User deleted", null);
     }
 }
+

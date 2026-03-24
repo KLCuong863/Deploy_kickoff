@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.example.backend.exception.*;
 
 import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -22,11 +24,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll()
                 .stream()
                 .map(UserMapper::toResponse)
-                .toList(); // Java 17 đẹp hơn
+                .toList();
     }
 
     @Override
-    public UserResponse getUserById(Long id) {
+    public UserResponse getUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with id = " + id));
@@ -48,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UserRequest request) {
+    public UserResponse updateUser(UUID id, UserRequest request) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -61,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->

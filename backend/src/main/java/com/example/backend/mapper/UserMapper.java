@@ -4,7 +4,7 @@ import com.example.backend.dto.request.UserRequest;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.User;
 
-import java.time.LocalDateTime;
+
 
 public class UserMapper {
 
@@ -13,8 +13,11 @@ public class UserMapper {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        user.setCreatedAt(LocalDateTime.now());
+        user.setPassword(request.getPassword());
+        user.setRoleId(request.getRoleId());
+        user.setDepartmentId(request.getDepartmentId());
+        user.setCreatedBy(request.getCreatedBy());
+        user.setStatus(request.getStatus() != null ? request.getStatus() : "ACTIVE");
 
         return user;
     }
@@ -25,14 +28,24 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .role(user.getRole())
+                .roleId(user.getRoleId())
+                .departmentId(user.getDepartmentId())
+                .createdBy(user.getCreatedBy())
+                .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
     public static void updateEntity(User user, UserRequest request) {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
+        user.setPassword(request.getPassword());
+        user.setRoleId(request.getRoleId());
+        user.setDepartmentId(request.getDepartmentId());
+        user.setCreatedBy(request.getCreatedBy());
+        if (request.getStatus() != null) {
+            user.setStatus(request.getStatus());
+        }
     }
 }

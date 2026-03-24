@@ -1,59 +1,72 @@
-# Frontend
+# Frontend - Task Management UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+Giao diện người dùng cho hệ thống quản lý Task, được phát triển bằng Angular.
 
-## Development server
+## 1. Cấu trúc file hiện tại của folder
 
-To start a local development server, run:
-
-```bash
-ng serve
+```text
+frontend/
+├── .angular/            # Angular build cache
+├── public/              # Các tài nguyên tĩnh (images, icons, robots.txt...)
+├── src/
+│   ├── app/
+│   │   ├── core/        # Các services core, interceptors, guards (Singleton)
+│   │   ├── pages/       # Các components trang chính (task-list, user-list...)
+│   │   ├── shared/      # Các components, pipes, directives dùng chung (Navbar...)
+│   │   ├── app.config.ts # Cấu hình Angular Providers (Routing, SSR, Animation...)
+│   │   ├── app.routes.ts # Cấu hình định tuyến (Routing) của ứng dụng
+│   │   ├── app.ts        # Component gốc của ứng dụng
+│   │   ├── app.html      # Template HTML gốc
+│   │   └── app.css       # Style CSS toàn cục mức ứng dụng
+│   ├── assets/          # (Nếu có) Chứa các file tĩnh dùng trong code
+│   ├── index.html       # File HTML chính
+│   └── main.ts          # Điểm khởi đầu (Entry point) của ứng dụng
+├── angular.json         # Cấu hình Angular CLI (build, test, serve...)
+├── package.json         # Quản lý libraries và scripts (npm)
+├── tsconfig.json        # Cấu hình TypeScript
+├── vercel.json          # Cấu hình deploy lên nền tảng Vercel
+└── README.md
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 2. Cách chạy dự án
 
-## Code scaffolding
+### Yêu cầu hệ thống
+* **Node.js**: Phiên bản 20.x hoặc mới hơn.
+* **npm**: Phiên bản 10.x hoặc mới hơn.
+* **Angular CLI**: Đã cài đặt global hoặc dùng qua `npx`.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Các bước thực hiện
+1.  **Cài đặt dependencies**:
+    ```bash
+    npm install
+    ```
+2.  **Chạy môi trường phát triển**:
+    ```bash
+    npm start
+    ```
+    Hoặc:
+    ```bash
+    ng serve
+    ```
+3.  **Truy cập ứng dụng**: Mở trình duyệt và truy cập `http://localhost:4200/`. Ứng dụng sẽ tự động tải lại khi bạn thay đổi code.
 
-```bash
-ng generate component component-name
-```
+4.  **Build sản phẩm**:
+    ```bash
+    npm run build
+    ```
+    Dữ liệu sẽ được lưu trong thư mục `dist/`.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 3. Tổng quan về app
 
-```bash
-ng generate --help
-```
+Ứng dụng cung cấp trải nghiệm hiện đại và mượt mà để người dùng quản lý công việc hàng ngày.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+*   **Công nghệ sử dụng**:
+    *   **Frontend Framework**: Angular 21 (Latest).
+    *   **Styling**: Tailwind CSS (PostCSS) cho giao diện nhanh và linh hoạt.
+    *   **State Management**: RxJS cho xử lý dữ liệu bất đồng bộ.
+    *   **Deployment**: Hỗ trợ SSR (Server-Side Rendering) và tối ưu hóa cho Vercel.
+*   **Tính năng chính**:
+    *   **Danh sách công việc**: Hiển thị tất cả task, lọc theo trạng thái.
+    *   **Chi tiết công việc**: Xem thông tin chi tiết và chỉnh sửa task.
+    *   **Danh sách người dùng**: Quản lý thông tin người dùng trong hệ thống.
+    *   **Giao diện đáp ứng**: Hoạt động tốt trên cả máy tính và thiết bị di động.
