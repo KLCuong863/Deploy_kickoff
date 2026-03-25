@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
@@ -68,9 +68,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Department department = null;
-        if ("CBTT".equalsIgnoreCase(role.getName())) {
+        String roleName = role.getName().toUpperCase();
+        
+        // Roles that require a department selection
+        if (roleName.contains("CBTT") || roleName.contains("MANAGER") || roleName.contains("TRƯỞNG PHÒNG")) {
             if (request.getDepartment() == null || request.getDepartment().trim().isEmpty()) {
-                throw new BadRequestException("Department is required for CBTT role.");
+                throw new BadRequestException("Department is required for " + role.getName() + " role.");
             }
             
             department = departmentRepository.findByNameIgnoreCase(request.getDepartment()).orElse(null);
@@ -78,6 +81,8 @@ public class AuthServiceImpl implements AuthService {
                 throw new BadRequestException("Phòng ban (Department) không tồn tại trên hệ thống");
             }
         }
+        // Director / Thủ trưởng usually does not require a specific department selection 
+        // as they oversee multiple or are at the top level
         
         User user = new User();
         user.setName(request.getName());
@@ -88,6 +93,16 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus("ACTIVE");
         user.setCreatedAt(LocalDateTime.now());
         
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        CustomUserDetails userDetails = new CustomUserDetails(user);
+        String jwtToken = jwtService.generateToken(userDetails);
+
+        return AuthResponse.builder()
+                .token(jwtToken)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .roleId(user.getRoleId())
+                .build();
     }
 }
