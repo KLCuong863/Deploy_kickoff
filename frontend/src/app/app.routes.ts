@@ -15,6 +15,24 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
+    path: 'vu-viec',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/vu-viec-list/vu-viec-list.component').then((m) => m.VuViecListComponent),
+  },
+  {
+    path: 'reports',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/reports/reports.component').then((m) => m.ReportsComponent),
+  },
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/settings/settings.component').then((m) => m.SettingsComponent),
+  },
+  {
     path: 'profile',
     canActivate: [authGuard],
     loadComponent: () =>

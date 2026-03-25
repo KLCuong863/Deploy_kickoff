@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-settings',
   standalone: true,
   imports: [CommonModule],
   template: `
     <div class="sl-placeholder-page">
-      <h1>Dashboard</h1>
+      <h1>Settings</h1>
     </div>
   `,
   styles: [`
@@ -28,4 +28,4 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class DashboardComponent {}
+export class SettingsComponent {}

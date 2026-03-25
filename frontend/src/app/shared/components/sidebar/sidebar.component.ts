@@ -120,29 +120,6 @@ import { LayoutStateService } from '../../../core/services/layout-state.service'
       opacity: 1;
     }
 
-    .sl-sidebar-bottom {
-      padding: 24px;
-      border-top: 1px solid var(--sl-border);
-    }
-
-    .sl-new-case-btn {
-      width: 100%;
-      padding: 14px;
-      background-color: var(--sl-sidebar-active-bg);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .sl-new-case-btn:hover {
-      background-color: #000;
-      transform: translateY(-1px);
-    }
   `]
 })
 export class SidebarComponent {

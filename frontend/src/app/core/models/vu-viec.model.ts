@@ -7,6 +7,8 @@ export interface VuViec {
   loaiVuViecId?: number;
   loaiVuViecTen?: string;
   donViId?: string;
+  donViTen?: string; 
+  createdByUserName?: string;
   mucDo: MucDo;
   trangThai: TrangThai;
   ngayXayRa?: string;
@@ -85,7 +87,7 @@ export interface DanhMucLoaiVuViec {
 
 export interface Department {
   id: string;
-  ten: string;
+  name: string;
   maPhong?: string;
 }
 
