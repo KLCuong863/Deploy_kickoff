@@ -34,6 +34,7 @@ public class VuViecServiceImpl implements VuViecService {
     private final VuViecTrangThaiLogRepository statusLogRepository;
     private final DepartmentRepository departmentRepository;
     private final FileService fileService;
+    private final UserRepository userRepository;
 
     private boolean hasPermission(CustomUserDetails user, String permissionName) {
         if (user.getUser().getRoleId() != null) {
@@ -155,7 +156,13 @@ public class VuViecServiceImpl implements VuViecService {
 
         VuViecResponse response = convertToResponse(vuViec);
         response.setFiles(vuViecFileRepository.findByVuViecId(id));
-        response.setStatusLogs(statusLogRepository.findByVuViecIdOrderByChangedAtDesc(id));
+        
+        List<VuViecTrangThaiLog> logs = statusLogRepository.findByVuViecIdOrderByChangedAtDesc(id);
+        logs.forEach(log -> {
+            userRepository.findById(log.getChangedBy())
+                .ifPresent(user -> log.setChangedByUserName(user.getName()));
+        });
+        response.setStatusLogs(logs);
 
         return response;
     }
@@ -415,6 +422,9 @@ public class VuViecServiceImpl implements VuViecService {
     private VuViecResponse convertToResponse(VuViec vuViec) {
         DanhMucLoaiVuViec loai = danhMucLoaiVuViecRepository.findById(vuViec.getLoaiVuViecId()).orElse(null);
         Department dept = departmentRepository.findById(vuViec.getDonViId()).orElse(null);
+        String createdByName = userRepository.findById(vuViec.getCreatedBy())
+                .map(User::getName)
+                .orElse(null);
 
         return VuViecResponse.builder()
                 .id(vuViec.getId())
@@ -430,6 +440,7 @@ public class VuViecServiceImpl implements VuViecService {
                 .moTa(vuViec.getMoTa())
                 .ghiChu(vuViec.getGhiChu())
                 .createdBy(vuViec.getCreatedBy())
+                .createdByUserName(createdByName)
                 .createdAt(vuViec.getCreatedAt())
                 .build();
     }

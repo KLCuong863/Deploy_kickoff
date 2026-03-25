@@ -8,6 +8,8 @@ import com.example.backend.entity.Role;
 import com.example.backend.entity.User;
 import com.example.backend.exception.BadRequestException;
 import com.example.backend.repository.DepartmentRepository;
+import com.example.backend.repository.PermissionRepository;
+import com.example.backend.entity.Permission;
 import com.example.backend.repository.RoleRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.CustomUserDetails;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PermissionRepository permissionRepository;
 
     @Override
     public AuthResponse login(LoginRequest request) {
@@ -47,15 +51,26 @@ public class AuthServiceImpl implements AuthService {
         var user = userDetails.getUser();
         String jwtToken = jwtService.generateToken(userDetails);
 
+        List<Permission> perms = permissionRepository.findByRoleId(user.getRoleId());
+        java.util.Set<String> permissionStrings = perms.stream().map(Permission::getName).collect(java.util.stream.Collectors.toSet());
+        // Implicit permissions mapped by role
+        if (user.getRoleId() == 3) {
+            permissionStrings.add("SEARCH");
+            permissionStrings.add("READ_ALL");
+        } else if (user.getRoleId() == 1) {
+            permissionStrings.add("SEARCH");
+            permissionStrings.add("READ_OWN");
+            // Standard user typically has CREATE
+            permissionStrings.add("CREATE");
+        }
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .roleId(user.getRoleId())
-                .permissions(userDetails.getAuthorities().stream()
-                        .map(auth -> auth.getAuthority())
-                        .collect(java.util.stream.Collectors.toSet()))
+                .permissions(permissionStrings)
                 .build();
     }
 
@@ -102,15 +117,25 @@ public class AuthServiceImpl implements AuthService {
         CustomUserDetails userDetails = new CustomUserDetails(user, role.getName());
         String jwtToken = jwtService.generateToken(userDetails);
 
+        List<Permission> perms = permissionRepository.findByRoleId(user.getRoleId());
+        java.util.Set<String> permissionStrings = perms.stream().map(Permission::getName).collect(java.util.stream.Collectors.toSet());
+        
+        if (user.getRoleId() == 3) {
+            permissionStrings.add("SEARCH");
+            permissionStrings.add("READ_ALL");
+        } else if (user.getRoleId() == 1) {
+            permissionStrings.add("SEARCH");
+            permissionStrings.add("READ_OWN");
+            permissionStrings.add("CREATE");
+        }
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .roleId(user.getRoleId())
-                .permissions(userDetails.getAuthorities().stream()
-                        .map(auth -> auth.getAuthority())
-                        .collect(java.util.stream.Collectors.toSet()))
+                .permissions(permissionStrings)
                 .build();
     }
 }

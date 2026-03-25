@@ -48,4 +48,7 @@ public class VuViecTrangThaiLog {
     @CreationTimestamp
     @Column(name = "changed_at", nullable = false, updatable = false)
     private LocalDateTime changedAt;
+
+    @Transient
+    private String changedByUserName;
 }
