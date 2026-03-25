@@ -8,7 +8,7 @@ import { ErrorDialogService } from '../../core/services/error-dialog.service';
   imports: [CommonModule],
   template: `
     @if (svc.dialog()) {
-      <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);">
         <div class="sl-error-dialog">
           <!-- Header -->
           <div class="sl-error-header">

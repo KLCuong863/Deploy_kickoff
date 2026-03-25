@@ -1,0 +1,82 @@
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.flex-1 { flex: 1; }
+
+.rich-editor-mock {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  background: #050505;
+  border-bottom: 1px solid #333;
+  padding: 8px 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.editor-toolbar button {
+  background: transparent;
+  border: none;
+  color: #666;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.editor-toolbar button:hover {
+  background: #222;
+  color: #fff;
+}
+
+.files-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-item {
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon { font-size: 16px; }
+.file-name { font-size: 12px; color: #fff; font-weight: 500; flex: 1; }
+.file-size { font-size: 10px; color: #666; background: #111; padding: 2px 6px; border-radius: 2px; }
+.file-remove { background: transparent; border: none; color: #933; cursor: pointer; font-size: 14px; }
+
+.form-actions {
+  padding: 24px 28px 48px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.sl-textarea {
+  border: none !important;
+  background: transparent !important;
+}
+
+.sl-section {
+  border-radius: 0;
+  border-left: 2px solid #555;
+  margin-bottom: 24px;
+}
+
+.sl-section-head {
+  background: #050505;
+}

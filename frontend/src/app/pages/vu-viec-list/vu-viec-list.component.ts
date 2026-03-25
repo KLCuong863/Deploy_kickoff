@@ -10,10 +10,12 @@ import {
   VuViecSearchRequest, MUC_DO_LABELS, TRANG_THAI_LABELS,
 } from '../../core/models/vu-viec.model';
 
+import { IconComponent } from '../../shared/components/icon/icon.component';
+
 @Component({
   selector: 'app-vu-viec-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, IconComponent],
   templateUrl: './vu-viec-list.component.html',
 })
 export class VuViecListComponent implements OnInit {
@@ -22,7 +24,6 @@ export class VuViecListComponent implements OnInit {
   vuViecs: VuViec[] = [];
   loaiOptions: DanhMucLoaiVuViec[] = [];
   loading = false;
-  showModal = false;
   successMsg = '';
   totalElements = 0;
 
@@ -37,29 +38,22 @@ export class VuViecListComponent implements OnInit {
   mucDoLabels = MUC_DO_LABELS;
   trangThaiLabels = TRANG_THAI_LABELS;
 
-  // Create form fields
-  selectedMucDo: MucDo | '' = '';
-  createForm: FormGroup;
-
   constructor(
     private vuViecService: VuViecService,
     private fb: FormBuilder,
     private router: Router,
     private cdr: ChangeDetectorRef,
-  ) {
-    this.createForm = this.fb.group({
-      tieu_de: ['', [Validators.required, Validators.maxLength(255)]],
-      loai_vu_viec: ['', Validators.required],
-      ngay_xay_ra: ['', Validators.required],
-      dia_diem: ['', Validators.maxLength(255)],
-      mo_ta: ['', [Validators.required, Validators.maxLength(10000)]],
-      ghi_chu: ['', Validators.maxLength(500)],
-    });
-  }
+  ) { }
 
   ngOnInit(): void {
     this.loadLookups();
     this.loadVuViecs();
+
+    // Check for success messages from navigation
+    const state = this.router.getCurrentNavigation()?.extras.state;
+    if (state?.['success']) {
+      this.showToast(state['success']);
+    }
   }
 
   loadLookups(): void {
@@ -99,45 +93,6 @@ export class VuViecListComponent implements OnInit {
     this.loadVuViecs();
   }
 
-  openCreate(): void {
-    this.createForm.reset();
-    this.selectedMucDo = '';
-    this.showModal = true;
-  }
-
-  closeModal(): void {
-    this.showModal = false;
-    this.createForm.reset();
-    this.selectedMucDo = '';
-  }
-
-  selectMucDo(m: MucDo): void { this.selectedMucDo = m; }
-
-  saveVuViec(): void {
-    if (this.createForm.invalid || !this.selectedMucDo) {
-      this.createForm.markAllAsTouched();
-      if (!this.selectedMucDo) {
-        this.errSvc.show({ title: 'THIẾU THÔNG TIN', message: 'Vui lòng chọn Mức độ nghiêm trọng.' });
-      }
-      return;
-    }
-    const val = this.createForm.value;
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const don_vi_id = user?.departmentId || '';
-
-    this.vuViecService.create({ ...val, muc_do: this.selectedMucDo, don_vi_id }).subscribe({
-      next: (created) => {
-        this.showToast('Thêm mới vụ việc thành công!');
-        this.closeModal();
-        if (created?.id) this.router.navigate(['/vu-viec', created.id]);
-        else this.loadVuViecs();
-      },
-      error: (err) => {
-        this.errSvc.show({ title: 'TẠO VỤ VIỆC THẤT BẠI', message: err?.error?.error || 'Đã xảy ra lỗi. Vui lòng thử lại.', code: err?.status });
-      },
-    });
-  }
-
   navigateToDetail(id: string): void { this.router.navigate(['/vu-viec', id]); }
 
   getMucDoBadge(m: MucDo): string {
@@ -158,14 +113,10 @@ export class VuViecListComponent implements OnInit {
     return map[t] ?? 'sl-badge';
   }
 
-  today(): string { return new Date().toISOString().split('T')[0]; }
-
   padNum(n: number, digits: number): string { return String(n).padStart(digits, '0'); }
 
   private showToast(msg: string): void {
     this.successMsg = msg;
     setTimeout(() => { this.successMsg = ''; this.cdr.markForCheck(); }, 4000);
   }
-
-  get f() { return this.createForm.controls; }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VuViecService } from '../../core/services/vu-viec.service';
 import { ErrorDialogService } from '../../core/services/error-dialog.service';
@@ -9,10 +9,12 @@ import {
   STATUS_TRANSITIONS, TRANG_THAI_LABELS, MUC_DO_LABELS, MucDo,
 } from '../../core/models/vu-viec.model';
 
+import { IconComponent } from '../../shared/components/icon/icon.component';
+
 @Component({
   selector: 'app-vu-viec-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, IconComponent],
   templateUrl: './vu-viec-detail.component.html',
 })
 export class VuViecDetailComponent implements OnInit {

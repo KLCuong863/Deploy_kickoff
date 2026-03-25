@@ -1,0 +1,172 @@
+<div class="sl-auth-container">
+  <!-- Left Side: Dark Hero -->
+  <div class="sl-auth-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-header">
+        <app-icon name="shield" [size]="28" [strokeWidth]="2.5" class="hero-logo-icon"></app-icon>
+        <div class="hero-brand">
+          <div class="brand-title">SENTINEL_LEDGER</div>
+          <div class="brand-subtitle">HỆ THỐNG QUẢN LÝ AN NINH QUÂN ĐỘI</div>
+        </div>
+      </div>
+
+      <div class="hero-slogan">
+        <h1>Bảo vệ vững chắc,<br>Quản lý thông minh.</h1>
+        <p>Nền tảng tích hợp hiện đại cho công tác bảo vệ an ninh, giám sát mục tiêu và quản lý vụ việc theo chuẩn quy trình quân đội.</p>
+      </div>
+
+      <ul class="hero-features">
+        <li>
+          <app-icon name="check-circle" [size]="18" class="feature-icon"></app-icon>
+          Xác thực đa yếu tố (MFA) chuẩn NIST
+        </li>
+        <li>
+          <app-icon name="database" [size]="18" class="feature-icon"></app-icon>
+          Mã hóa dữ liệu đầu-cuối (AES-256)
+        </li>
+        <li>
+          <app-icon name="activity" [size]="18" class="feature-icon"></app-icon>
+          Giám sát thời gian thực 24/7
+        </li>
+      </ul>
+
+      <div class="hero-footer">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          SYSTEM_ONLINE
+        </div>
+        <div class="node-id">SECURE_NODE_042</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Auth Form -->
+  <div class="sl-auth-form-side">
+    <div class="auth-card">
+      <!-- Mode Toggle -->
+      <div class="auth-mode-toggle">
+        <button [class.active]="isLoginMode" (click)="setMode('login')">ĐĂNG NHẬP</button>
+        <button [class.active]="!isLoginMode" (click)="setMode('register')">ĐĂNG KÝ</button>
+      </div>
+
+      <div class="auth-header">
+        <h2>{{ isLoginMode ? 'Chào mừng trở lại' : 'Tạo tài khoản mới' }}</h2>
+        <p>{{ isLoginMode ? 'Truy cập hệ thống an ninh quân đội' : 'Đăng ký truy cập hệ thống Sentinel' }}</p>
+      </div>
+
+      <!-- Error Message -->
+      @if (errorMessage) {
+        <div class="auth-error-box">
+          <app-icon name="trash" [size]="14" style="margin-right: 8px;"></app-icon>
+          {{ errorMessage }}
+        </div>
+      }
+
+      <form [formGroup]="isLoginMode ? loginForm : registerForm" (ngSubmit)="onSubmit()" class="sl-auth-form">
+        <!-- Login Mode -->
+        @if (isLoginMode) {
+          <div class="sl-form-group">
+            <label class="sl-form-label">EMAIL CÔNG VỤ</label>
+            <div class="sl-input-wrapper">
+              <app-icon name="reports" [size]="18" class="input-icon"></app-icon>
+              <input type="email" formControlName="email" placeholder="example@military.gov.vn" (input)="clearError()">
+            </div>
+          </div>
+
+          <div class="sl-form-group">
+            <div class="label-flex">
+              <label class="sl-form-label">MẬT KHẨU</label>
+              <a href="#" class="forgot-pwd">Quên mật khẩu?</a>
+            </div>
+            <div class="sl-input-wrapper">
+              <app-icon name="lock" [size]="18" class="input-icon"></app-icon>
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" (input)="clearError()">
+              <button type="button" class="pwd-toggle" (click)="togglePassword()">
+                <app-icon name="eye" [size]="16"></app-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-options">
+            <label class="sl-checkbox">
+              <input type="checkbox" formControlName="rememberMe">
+              <span>Ghi nhớ phiên đăng nhập</span>
+            </label>
+          </div>
+        } 
+        <!-- Register Mode -->
+        @else {
+          <div class="sl-form-group">
+            <label class="sl-form-label">HỌ VÀ TÊN</label>
+            <div class="sl-input-wrapper">
+              <app-icon name="person" [size]="18" class="input-icon"></app-icon>
+              <input type="text" formControlName="fullName" placeholder="VD: Nguyễn Văn A" (input)="clearError()">
+            </div>
+          </div>
+
+          <div class="sl-form-group">
+            <label class="sl-form-label">EMAIL CÔNG VỤ</label>
+            <div class="sl-input-wrapper">
+              <app-icon name="reports" [size]="18" class="input-icon"></app-icon>
+              <input type="email" formControlName="email" placeholder="example@military.gov.vn" (input)="clearError()">
+            </div>
+          </div>
+
+          <div class="sl-form-group">
+            <label class="sl-form-label">VỊ TRÍ / CHỨC VỤ</label>
+            <div class="sl-input-wrapper">
+              <app-icon name="reports" [size]="18" class="input-icon"></app-icon>
+              <select formControlName="vi_tri" class="sl-select" (change)="onPositionChange()">
+                <option value="" disabled selected>Chọn vị trí...</option>
+                @for (role of roles; track role.id) {
+                  <option [value]="role.name">{{ role.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          @if (showUnitField) {
+            <div class="sl-form-group">
+              <label class="sl-form-label">TÊN ĐƠN VỊ</label>
+              <div class="sl-input-wrapper">
+                <app-icon name="cases" [size]="18" class="input-icon"></app-icon>
+                <select formControlName="don_vi" class="sl-select" (change)="clearError()">
+                  <option value="" disabled selected>Chọn đơn vị công tác...</option>
+                  @for (unit of units; track unit.id) {
+                    <option [value]="unit.name">{{ unit.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          }
+
+          <div class="sl-form-group">
+            <label class="sl-form-label">MẬT KHẨU MỚI</label>
+            <div class="sl-input-wrapper">
+              <app-icon name="lock" [size]="18" class="input-icon"></app-icon>
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••" (input)="clearError()">
+              <button type="button" class="pwd-toggle" (click)="togglePassword()">
+                <app-icon name="eye" [size]="16"></app-icon>
+              </button>
+            </div>
+          </div>
+        }
+
+        <button type="submit" class="auth-submit-btn" [disabled]="loading">
+          {{ loading ? 'ĐANG XỬ LÝ...' : (isLoginMode ? 'ĐĂNG NHẬP' : 'ĐĂNG KÝ') }}
+          @if (!loading) {
+            <app-icon name="arrow-right" [size]="16" style="margin-left: 8px;"></app-icon>
+          }
+        </button>
+      </form>
+
+      <div class="auth-legal-info">
+        <div class="legal-header">THÔNG TIN PHÁP LÝ</div>
+        <p>MỌI HÀNH VI TRUY CẬP TRÁI PHÉP HOẶC CỐ TÌNH PHÁ HOẠI HỆ THỐNG SẼ BỊ TRUY TỐ TRƯỚC PHÁP LUẬT QUÂN ĐỘI THEO NGHỊ ĐỊNH 12/2026/CP.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

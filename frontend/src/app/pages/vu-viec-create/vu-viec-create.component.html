@@ -1,0 +1,136 @@
+<div class="sl-breadcrumb">
+  <a routerLink="/vu-viec">VỤ VIỆC</a> &nbsp;/&nbsp;
+  <span>THÊM MỚI</span>
+</div>
+
+<div class="sl-page-header">
+  <div>
+    <div class="sl-page-title">THÊM MỚI VỤ VIỆC</div>
+    <div style="font-size: 10px; color: #4b5563; font-weight: 700; margin-top: 4px;">SCREEN ID: ADD_CASE_SCREEN</div>
+  </div>
+  <div style="text-align: right;">
+    <div class="sl-badge sl-badge-moi" style="font-size: 11px; padding: 6px 12px; margin-bottom: 4px;">TRẠNG THÁI: MỚI</div>
+    <div style="font-size: 10px; color: #4b5563; font-style: italic;">Tự động khởi tạo hệ thống</div>
+  </div>
+</div>
+
+<form [formGroup]="createForm" (ngSubmit)="save()">
+  <!-- Section 1 -->
+  <section class="sl-section">
+    <div class="sl-section-head">
+      <div class="sl-section-num">🔍</div>
+      <span class="sl-section-label">1. THÔNG TIN CƠ BẢN</span>
+    </div>
+    <div class="sl-section-body">
+      <div class="sl-form-group">
+        <label class="sl-form-label">TIÊU ĐỀ VỤ VIỆC <span class="sl-required">*</span></label>
+        <input class="sl-input" formControlName="tieu_de" type="text" placeholder="Nhập tên tiêu đề để ngắn gọn, súc tích...">
+        <div class="sl-form-hint">Gợi ý: Bao gồm loại sự việc và vị trí (VD: Mất trật tự tại kho K12)</div>
+      </div>
+
+      <div class="form-row">
+        <div class="sl-form-group flex-1">
+          <label class="sl-form-label">LOẠI VỤ VIỆC <span class="sl-required">*</span></label>
+          <div class="sl-select-wrap">
+            <select class="sl-select" formControlName="loai_vu_viec">
+              <option value="">-- Chọn phân loại --</option>
+              @for (l of loaiOptions; track l.id) {
+                <option [value]="l.ten">{{ l.ten }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="sl-form-group flex-1">
+          <label class="sl-form-label">MỨC ĐỘ <span class="sl-required">*</span></label>
+          <div class="sl-muc-do-group">
+            <button type="button" class="sl-muc-do-btn" [class.active-thap]="selectedMucDo === 'THAP'" (click)="selectMucDo('THAP')">THẤP</button>
+            <button type="button" class="sl-muc-do-btn" [class.active-tb]="selectedMucDo === 'TRUNG_BINH'" (click)="selectMucDo('TRUNG_BINH')">TRUNG BÌNH</button>
+            <button type="button" class="sl-muc-do-btn" [class.active-cao]="selectedMucDo === 'CAO'" (click)="selectMucDo('CAO')">NGHIÊM TRỌNG</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="sl-form-group flex-1">
+          <label class="sl-form-label">NGÀY XẢY RA <span class="sl-required">*</span></label>
+          <input class="sl-input" formControlName="ngay_xay_ra" type="date">
+        </div>
+        <div class="sl-form-group flex-1">
+          <label class="sl-form-label">ĐỊA ĐIỂM <span class="sl-required">*</span></label>
+          <input class="sl-input" formControlName="dia_diem" type="text" placeholder="Tọa độ hoặc tên phân khu...">
+        </div>
+      </div>
+
+      <div class="sl-form-group">
+        <label class="sl-form-label">ĐƠN VỊ XẢY RA</label>
+        <input class="sl-input" type="text" value="Sư đoàn 304" readonly>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2 -->
+  <section class="sl-section">
+    <div class="sl-section-head">
+      <div class="sl-section-num">📄</div>
+      <span class="sl-section-label">2. CHI TIẾT & HỒ SƠ</span>
+    </div>
+    <div class="sl-section-body">
+      <div class="sl-form-group">
+        <label class="sl-form-label">MÔ TẢ CHI TIẾT VỤ VIỆC <span class="sl-required">*</span></label>
+        <div class="rich-editor-mock">
+          <div class="editor-toolbar">
+            <button type="button"><b>B</b></button>
+            <button type="button"><i>I</i></button>
+            <button type="button">#</button>
+            <button type="button">🔗</button>
+          </div>
+          <textarea class="sl-textarea" formControlName="mo_ta" rows="8" placeholder="Tường thuật chi tiết diễn biến, các đối tượng liên quan và hậu quả ban đầu..."></textarea>
+        </div>
+      </div>
+
+      <div class="sl-form-group">
+        <label class="sl-form-label">FILE ĐÍNH KÈM (TỐI DA 5 FILES, < 20MB)</label>
+        <div class="sl-upload-zone" (click)="fileInput.click()">
+          <div class="sl-upload-icon">☁️</div>
+          <div class="sl-upload-text">Kéo thả file vào đây hoặc <span class="sl-upload-link">chọn tệp từ máy tính</span></div>
+          <div class="sl-upload-hint">ĐỊNH DẠNG HỖ TRỢ: .PDF, .DOCX, .XLSX, .JPG, .PNG</div>
+          <input #fileInput type="file" multiple (change)="onFileChange($event)" style="display: none">
+        </div>
+        @if (files.length > 0) {
+          <div class="files-list">
+            @for (f of files; track f.name) {
+              <div class="file-item">
+                <span class="file-icon">🖼️</span>
+                <span class="file-name">{{ f.name }}</span>
+                <span class="file-size">{{ (f.size / 1024 / 1024).toFixed(2) }} MB</span>
+                <button type="button" class="file-remove">✕</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3 -->
+  <section class="sl-section">
+    <div class="sl-section-head">
+      <div class="sl-section-num">📝</div>
+      <span class="sl-section-label">3. GHI CHÚ & CHỈ ĐẠO</span>
+    </div>
+    <div class="sl-section-body">
+      <div class="sl-form-group">
+        <textarea class="sl-textarea" formControlName="ghi_chu" rows="3" placeholder="Ghi chú thêm cho người xử lý hoặc ý kiến chỉ đạo ban đầu của cấp trên..."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Actions -->
+  <div class="form-actions">
+    <button class="sl-btn sl-btn-primary" (click)="cancel()">HUỶ BỎ</button>
+    <button class="sl-btn sl-btn-dark" (click)="save()">
+      <app-icon name="shield" [size]="14" [strokeWidth]="2.5" style="margin-right: 6px;"></app-icon>
+      LƯU VÀO HỆ THỐNG
+    </button>
+  </div>
+</form>

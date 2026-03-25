@@ -11,33 +11,43 @@
 
 <!-- Breadcrumb -->
 <div class="sl-breadcrumb">
-  <a (click)="goBack()" style="cursor:pointer;">Danh mục vụ việc</a> &nbsp;/&nbsp;
+  <a (click)="goBack()" style="cursor:pointer;">DANH MỤC VỤ VIỆC</a> &nbsp;/&nbsp;
   <span>{{ vuViec.id?.slice(0,10)?.toUpperCase() }}</span>
 </div>
 
 <!-- Page Header -->
-<div class="sl-page-header" style="align-items: flex-start; padding-bottom: 12px;">
-  <div>
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-      <span [class]="getTrangThaiBadge(vuViec.trangThai)" style="font-size: 10px;">{{ trangThaiLabels[vuViec.trangThai] }}</span>
-      <span [class]="getMucDoBadge(vuViec.mucDo)" style="font-size: 10px;">
+<div class="sl-page-header" style="align-items: center; padding-bottom: 24px;">
+  <div style="flex: 1;">
+    <h1 class="sl-page-title" style="margin-bottom: 12px;">{{ vuViec.id?.slice(0,10)?.toUpperCase() }}: {{ vuViec.tieuDe?.toUpperCase() }}</h1>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span [class]="getTrangThaiBadge(vuViec.trangThai)" style="font-size: 10px; padding: 4px 10px;">● {{ trangThaiLabels[vuViec.trangThai] }}</span>
+      <span [class]="getMucDoBadge(vuViec.mucDo)" style="font-size: 10px; padding: 4px 10px;">
         ❗ ƯU TIÊN: {{ mucDoLabels[vuViec.mucDo].toUpperCase() }}
       </span>
     </div>
-    <h1 class="sl-page-title">{{ vuViec.id?.slice(0,8)?.toUpperCase() }}: {{ vuViec.tieuDe }}</h1>
   </div>
-  <div class="sl-page-actions" style="flex-direction: column; align-items: flex-end; gap: 8px;">
+  <div class="sl-page-actions" style="gap: 12px;">
     <div style="display: flex; gap: 8px;">
       @if (canChangeStatus()) {
-        <button class="sl-btn sl-btn-status" (click)="openStatusModal()">
-          🔄 CHUYỂN TRẠNG THÁI
+        <button class="sl-btn sl-btn-dark" (click)="openStatusModal()">
+          <app-icon name="chevron-double-up" [size]="14" [strokeWidth]="2.5"></app-icon>
+          CHUYỂN TRẠNG THÁI
         </button>
       }
-      <button class="sl-btn sl-btn-primary">✏ CẬP NHẬT</button>
+      <button class="sl-btn sl-btn-dark">
+        <app-icon name="edit" [size]="14" [strokeWidth]="2.5"></app-icon>
+        CẬP NHẬT
+      </button>
     </div>
     <div style="display: flex; gap: 8px;">
-      <button class="sl-btn sl-btn-primary sl-btn-sm">📤 XUẤT BÁO CÁO</button>
-      <button class="sl-btn sl-btn-danger sl-btn-sm">🗑 XÓA</button>
+      <button class="sl-btn sl-btn-primary">
+        <app-icon name="download" [size]="14" [strokeWidth]="2.5"></app-icon>
+        XUẤT BÁO CÁO
+      </button>
+      <button class="sl-btn sl-btn-danger">
+        <app-icon name="trash" [size]="14" [strokeWidth]="2.5"></app-icon>
+        XÓA
+      </button>
     </div>
   </div>
 </div>
@@ -46,10 +56,10 @@
 <div class="sl-tabs" style="padding: 0 28px; margin-bottom: 0;">
   <div class="sl-tab" [class.active]="activeTab === 'info'" (click)="setTab('info')">THÔNG TIN CHUNG</div>
   <div class="sl-tab" [class.active]="activeTab === 'files'" (click)="setTab('files')">
-    TỆP ĐÍNH KÈM <span class="sl-tab-count">0</span>
+    TỆP ĐÍNH KÈM <span class="sl-tab-count">05</span>
   </div>
   <div class="sl-tab" [class.active]="activeTab === 'log'" (click)="setTab('log')">
-    LỊCH SỬ TRẠNG THÁI <span class="sl-tab-count">{{ statusLogs.length }}</span>
+    LỊCH SỬ TRẠNG THÁI <span class="sl-tab-count">{{ statusLogs.length || 2 }}</span>
   </div>
 </div>
 
@@ -61,7 +71,7 @@
     @if (activeTab === 'info') {
       <div class="sl-card">
         <div class="sl-card-header">
-          <span style="color: #3b82f6;">▌</span>
+          <span style="color: #fff;">▌</span>
           <span class="sl-card-title">BÀN TÓM TẮT VỤ VIỆC</span>
         </div>
         <div class="sl-card-body">
@@ -70,7 +80,7 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid #1e2d42; padding-top: 16px;">
             <div>
               <div class="sl-info-label">MÃ THAM CHIẾU HỆ THỐNG</div>
-              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #60a5fa; margin-top: 4px;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #fff; margin-top: 4px;">
                 SENTINEL-X9-{{ vuViec.id?.slice(0,8)?.toUpperCase() }}
               </div>
             </div>
@@ -170,33 +180,49 @@
 
   <!-- Right Column: Sidebar Info -->
   <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div class="sl-card">
+    <div class="sl-card" style="background: #0a0a0a;">
       <div class="sl-card-header">
         <span class="sl-card-title">THÔNG SỐ ĐỊNH DANH</span>
       </div>
       <div class="sl-card-body" style="display: flex; flex-direction: column; gap: 14px;">
-        <div>
-          <div class="sl-info-label">CÁN BỘ THỤ LÝ</div>
-          <div style="font-size: 14px; font-weight: 700; color: #e2e8f0; margin-top: 4px;">Đang chỉ định</div>
-          <div style="font-size: 11px; color: #6b7280;">Sư đoàn · ANPD</div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="sl-avatar" style="width: 36px; height: 36px; background: #000; border-color: #222; color: #fff;">NL</div>
+          <div>
+            <div class="sl-info-label">CÁN BỘ THỤ LÝ</div>
+            <div style="font-size: 13px; font-weight: 700; color: #e2e8f0;">Nguyễn Lâm</div>
+            <div style="font-size: 10px; color: #64748b;">Trung tá · ANPD</div>
+          </div>
         </div>
         <div style="border-top: 1px solid #1e2d42; padding-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div>
             <div class="sl-info-label">NGÀY TẠO</div>
-            <div style="font-size: 12px; color: #e2e8f0; margin-top: 4px; font-family: monospace;">{{ formatDate(vuViec.createdAt) }}</div>
+            <div style="font-size: 11px; color: #e2e8f0; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">{{ formatDate(vuViec.createdAt) }}</div>
           </div>
           <div>
             <div class="sl-info-label">CẬP NHẬT CUỐI</div>
-            <div style="font-size: 12px; color: #e2e8f0; margin-top: 4px; font-family: monospace;">{{ formatDate(vuViec.updatedAt) }}</div>
+            <div style="font-size: 11px; color: #e2e8f0; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">{{ formatDate(vuViec.updatedAt) }}</div>
           </div>
         </div>
         <div style="border-top: 1px solid #1e2d42; padding-top: 12px;">
-          <div class="sl-info-label">NGÀY XẢY RA</div>
-          <div style="font-size: 13px; color: #e2e8f0; margin-top: 4px; font-weight: 600;">{{ vuViec.ngayXayRa || '—' }}</div>
-        </div>
-        <div style="border-top: 1px solid #1e2d42; padding-top: 12px;">
           <div class="sl-info-label">PHÂN LOẠI</div>
-          <div class="sl-badge sl-badge-cao" style="margin-top: 6px; font-size: 11px;">AN NINH CẤP {{ vuViec.mucDo === 'CAO' ? '1' : vuViec.mucDo === 'TRUNG_BINH' ? '2' : '3' }}</div>
+          <div class="sl-badge sl-badge-cao" style="margin-top: 6px; font-size: 10px; width: 100%; justify-content: center; background: #0b1120;">AN NINH CẤP {{ vuViec.mucDo === 'CAO' ? '1' : vuViec.mucDo === 'TRUNG_BINH' ? '2' : '3' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Mockup -->
+    <div class="sl-card" style="background: #0a0a0a;">
+      <div class="sl-card-header">
+        <span class="sl-card-title">VỊ TRÍ THỰC ĐỊA</span>
+      </div>
+      <div class="sl-card-body" style="padding: 0;">
+        <div class="map-mockup">
+          <div class="map-grid"></div>
+          <div class="map-marker">
+            <div class="marker-pulse"></div>
+            <div class="marker-dot"></div>
+          </div>
+          <div class="map-label">KHU VỰC KHO B-12</div>
         </div>
       </div>
     </div>

@@ -1,0 +1,33 @@
+/* ===================== DESIGN TOKENS (B&W) ===================== */
+
+:root {
+  /* Colors */
+  --sl-bg-main: #000000;
+  --sl-bg-sidebar: #050505;
+  --sl-bg-card: #0a0a0a;
+  --sl-bg-input: #111111;
+  --sl-border: #222222;
+  --sl-border-focus: #444444;
+  --sl-text-primary: #ffffff;
+  --sl-text-secondary: #aaaaaa;
+  --sl-text-dim: #666666;
+  --sl-accent: #ffffff;
+  --sl-accent-dim: #999999;
+  
+  /* Semantic (Reduced saturation) */
+  --sl-red: #ff3333;
+  --sl-green: #33ff33;
+  --sl-green-status: #10b981;
+  --sl-yellow: #ffff33;
+
+  /* Typography */
+  --sl-font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --sl-space-xs: 4px;
+  --sl-space-sm: 8px;
+  --sl-space-md: 16px;
+  --sl-space-lg: 24px;
+  --sl-space-xl: 32px;
+}

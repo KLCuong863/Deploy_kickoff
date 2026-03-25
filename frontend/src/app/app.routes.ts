@@ -1,31 +1,16 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'vu-viec', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: 'users',
+    path: 'login',
     loadComponent: () =>
-      import('./pages/user-list/user-list.component').then((m) => m.UserListComponent),
+      import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'tasks',
+    path: 'dashboard',
     loadComponent: () =>
-      import('./pages/task-list/task-list.component').then((m) => m.TaskListComponent),
+      import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
-  {
-    path: 'tasks/:id',
-    loadComponent: () =>
-      import('./pages/task-detail/task-detail.component').then((m) => m.TaskDetailComponent),
-  },
-  {
-    path: 'vu-viec',
-    loadComponent: () =>
-      import('./pages/vu-viec-list/vu-viec-list.component').then((m) => m.VuViecListComponent),
-  },
-  {
-    path: 'vu-viec/:id',
-    loadComponent: () =>
-      import('./pages/vu-viec-detail/vu-viec-detail.component').then((m) => m.VuViecDetailComponent),
-  },
-  { path: '**', redirectTo: 'vu-viec' },
+  { path: '**', redirectTo: 'login' }
 ];
