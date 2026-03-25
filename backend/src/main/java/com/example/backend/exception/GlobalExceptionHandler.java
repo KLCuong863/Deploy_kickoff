@@ -16,8 +16,8 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleBadRequest(BadRequestException ex) {
         return ErrorResponse.builder()
                 .status(400)
-                .message("Bad request")
-                .error(ex.getMessage())
+                .error("Bad request")
+                .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleNotFound(ResourceNotFoundException ex) {
         return ErrorResponse.builder()
                 .status(404)
-                .message("Resource not found")
-                .error(ex.getMessage())
+                .error("Resource not found")
+                .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
 
         return ErrorResponse.builder()
                 .status(400)
-                .message("Validation failed")
-                .error(error)
+                .error("Validation failed")
+                .message(error)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleBadCredentials(BadCredentialsException ex) {
         return ErrorResponse.builder()
                 .status(401)
-                .message("Unauthorized")
-                .error("Email hoặc mật khẩu không chính xác")
+                .error("Unauthorized")
+                .message("Email hoặc mật khẩu không chính xác")
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -64,8 +64,8 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleAll(Exception ex) {
         return ErrorResponse.builder()
                 .status(500)
-                .message("Internal server error")
-                .error(ex.getMessage())
+                .error("Internal server error")
+                .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
     }

@@ -36,6 +36,12 @@ public class VuViecServiceImpl implements VuViecService {
     private final FileService fileService;
 
     private boolean hasPermission(CustomUserDetails user, String permissionName) {
+        if (user.getUser().getRoleId() != null && user.getUser().getRoleId() == 3) {
+            if ("SEARCH".equalsIgnoreCase(permissionName) || "READ_ALL".equalsIgnoreCase(permissionName)) {
+                return true;
+            }
+        }
+
         List<Permission> permissions = permissionRepository.findByRoleId(user.getUser().getRoleId());
         return permissions.stream().anyMatch(p -> p.getName().equalsIgnoreCase(permissionName));
     }

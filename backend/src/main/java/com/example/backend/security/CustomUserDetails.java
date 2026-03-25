@@ -11,9 +11,15 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
+    private final String roleName;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, String roleName) {
         this.user = user;
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
     }
 
     public User getUser() {

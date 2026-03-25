@@ -49,9 +49,13 @@ public class AuthServiceImpl implements AuthService {
 
         return AuthResponse.builder()
                 .token(jwtToken)
-                .userId(user.getId())
+                .id(user.getId())
                 .email(user.getEmail())
+                .name(user.getName())
                 .roleId(user.getRoleId())
+                .permissions(userDetails.getAuthorities().stream()
+                        .map(auth -> auth.getAuthority())
+                        .collect(java.util.stream.Collectors.toSet()))
                 .build();
     }
 
@@ -95,14 +99,18 @@ public class AuthServiceImpl implements AuthService {
         
         user = userRepository.save(user);
 
-        CustomUserDetails userDetails = new CustomUserDetails(user);
+        CustomUserDetails userDetails = new CustomUserDetails(user, role.getName());
         String jwtToken = jwtService.generateToken(userDetails);
 
         return AuthResponse.builder()
                 .token(jwtToken)
-                .userId(user.getId())
+                .id(user.getId())
                 .email(user.getEmail())
+                .name(user.getName())
                 .roleId(user.getRoleId())
+                .permissions(userDetails.getAuthorities().stream()
+                        .map(auth -> auth.getAuthority())
+                        .collect(java.util.stream.Collectors.toSet()))
                 .build();
     }
 }
