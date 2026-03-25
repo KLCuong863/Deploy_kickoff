@@ -2,7 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.response.ApiResponse;
 import com.example.backend.entity.Department;
-import com.example.backend.entity.Role;
+import com.example.backend.dto.response.RoleResponse;
 import com.example.backend.entity.DanhMucLoaiVuViec;
 import com.example.backend.dto.response.PermissionResponse;
 import com.example.backend.service.CommonService;
@@ -22,7 +22,7 @@ public class CommonController {
     private final CommonService commonService;
 
     @GetMapping("/roles")
-    public ApiResponse<List<Role>> getAllRoles() {
+    public ApiResponse<List<RoleResponse>> getAllRoles() {
         return ApiResponse.success("Get roles successfully", commonService.getAllRoles());
     }
 

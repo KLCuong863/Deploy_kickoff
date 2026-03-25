@@ -1,7 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.entity.Department;
-import com.example.backend.entity.Role;
+import com.example.backend.dto.response.RoleResponse;
 import com.example.backend.entity.DanhMucLoaiVuViec;
 import com.example.backend.dto.response.PermissionResponse;
 import com.example.backend.exception.BadRequestException;
@@ -26,8 +26,13 @@ public class CommonServiceImpl implements CommonService {
     private final PermissionRepository permissionRepository;
 
     @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    public List<RoleResponse> getAllRoles() {
+        return roleRepository.findAll().stream()
+                .map(role -> RoleResponse.builder()
+                        .id(role.getId())
+                        .name(role.getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
