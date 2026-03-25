@@ -1,3 +1,21 @@
-<router-outlet />
+<div class="sl-app-container" 
+     [class.sidebar-active]="isSidebarVisible"
+     *ngIf="!isLoginPage(); else loginLayout">
+  
+  <div class="sl-sidebar-trigger" (mouseenter)="toggleSidebar(true)"></div>
+  
+  <app-sidebar (mouseleave)="toggleSidebar(false)"></app-sidebar>
+  
+  <div class="sl-main-wrapper">
+    <app-topbar [user]="layoutState.user()"></app-topbar>
+    <main class="sl-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<ng-template #loginLayout>
+  <router-outlet />
+</ng-template>
 
 <app-error-dialog />

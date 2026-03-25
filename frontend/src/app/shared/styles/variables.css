@@ -2,17 +2,20 @@
 
 :root {
   /* Colors */
-  --sl-bg-main: #000000;
-  --sl-bg-sidebar: #050505;
-  --sl-bg-card: #0a0a0a;
-  --sl-bg-input: #111111;
-  --sl-border: #222222;
-  --sl-border-focus: #444444;
-  --sl-text-primary: #ffffff;
-  --sl-text-secondary: #aaaaaa;
-  --sl-text-dim: #666666;
-  --sl-accent: #ffffff;
-  --sl-accent-dim: #999999;
+  --sl-bg-main: #f8fafc;
+  --sl-bg-sidebar: #eef2f6;
+  --sl-bg-header: #1a202c;
+  --sl-bg-card: #ffffff;
+  --sl-bg-input: #ffffff;
+  --sl-border: #e2e8f0;
+  --sl-border-focus: #cbd5e1;
+  --sl-text-primary: #1e293b;
+  --sl-text-secondary: #64748b;
+  --sl-text-dim: #94a3b8;
+  --sl-header-text: #ffffff;
+  --sl-sidebar-active-bg: #1a202c;
+  --sl-sidebar-active-text: #ffffff;
+  --sl-accent: #1a202c;
   
   /* Semantic (Reduced saturation) */
   --sl-red: #ff3333;

@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -15,9 +15,10 @@ import { ErrorDialogService } from '../../core/services/error-dialog.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private commonService = inject(CommonService);
   private errorService = inject(ErrorDialogService);
@@ -25,12 +26,19 @@ export class LoginComponent {
   isLoginMode: boolean = true;
   showPassword: boolean = false;
   errorMessage: string | null = null;
+  logoutSuccess: boolean = false;
 
   roles: any[] = [];
   units: any[] = [];
   loading: boolean = false;
 
-  constructor() {
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['logout'] === 'success') {
+        this.logoutSuccess = true;
+        setTimeout(() => this.logoutSuccess = false, 5000); // Hide after 5s
+      }
+    });
     this.loadLookups();
   }
 
@@ -106,8 +114,8 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (res) => {
           this.loading = false;
-          localStorage.setItem('currentUser', JSON.stringify(res.data));
-          localStorage.setItem('token', res.data.token);
+          const rememberMe = this.loginForm.get('rememberMe')?.value || false;
+          this.authService.saveSession(res.data, rememberMe);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
@@ -138,9 +146,8 @@ export class LoginComponent {
       this.authService.register(payload).subscribe({
         next: (res) => {
           this.loading = false;
-          // Automatic login after successful registration
-          localStorage.setItem('currentUser', JSON.stringify(res.data));
-          localStorage.setItem('token', res.data.token);
+          // Automatic login after successful registration (no remember me by default)
+          this.authService.saveSession(res.data, false);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {

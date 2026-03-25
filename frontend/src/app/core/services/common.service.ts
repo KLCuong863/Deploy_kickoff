@@ -22,4 +22,10 @@ export class CommonService {
       map(res => res.data)
     );
   }
+
+  getPermissions(roleId: number): Observable<any[]> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/permissions/${roleId}`).pipe(
+      map(res => res.data)
+    );
+  }
 }

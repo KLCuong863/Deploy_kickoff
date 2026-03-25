@@ -44,6 +44,14 @@
   <!-- Right Side: Auth Form -->
   <div class="sl-auth-form-side">
     <div class="auth-card">
+      <!-- Logout Success Message -->
+      @if (logoutSuccess) {
+        <div class="sl-auth-alert success">
+          <app-icon name="check-circle" [size]="16" style="margin-right: 8px;"></app-icon>
+          <span>Đăng xuất thành công. Hẹn gặp lại!</span>
+        </div>
+      }
+
       <!-- Mode Toggle -->
       <div class="auth-mode-toggle">
         <button [class.active]="isLoginMode" (click)="setMode('login')">ĐĂNG NHẬP</button>

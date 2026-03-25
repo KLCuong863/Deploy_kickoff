@@ -13,33 +13,33 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<User[]> {
-    return this.http.get<ApiResponse<User[]>>(this.apiUrl, {
+  getAll(): Observable<any[]> {
+    return this.http.get<ApiResponse<any[]>>(this.apiUrl, {
       headers: { 'Cache-Control': 'no-cache' }
     }).pipe(
       map(response => response.data)
     );
   }
 
-  getById(id: number): Observable<User> {
-    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/${id}`).pipe(
+  getById(id: any): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/${id}`).pipe(
       map(response => response.data)
     );
   }
 
-  create(user: User): Observable<User> {
-    return this.http.post<ApiResponse<User>>(this.apiUrl, user).pipe(
+  create(user: any): Observable<any> {
+    return this.http.post<ApiResponse<any>>(this.apiUrl, user).pipe(
       map(response => response.data)
     );
   }
 
-  update(id: number, user: User): Observable<User> {
-    return this.http.put<ApiResponse<User>>(`${this.apiUrl}/${id}`, user).pipe(
+  update(id: any, user: any): Observable<any> {
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/${id}`, user).pipe(
       map(response => response.data)
     );
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: any): Observable<void> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`).pipe(
       map(response => response.data)
     );
