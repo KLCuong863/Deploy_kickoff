@@ -14,5 +14,7 @@ public class AuthResponse {
     private String email;
     private String name;
     private Integer roleId;
+    private UUID departmentId;
+    private String departmentName;
     private Set<String> permissions;
 }

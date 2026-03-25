@@ -64,12 +64,20 @@ public class AuthServiceImpl implements AuthService {
             permissionStrings.add("CREATE");
         }
 
+        String deptName = null;
+        if (user.getDepartmentId() != null) {
+            deptName = departmentRepository.findById(user.getDepartmentId())
+                    .map(Department::getName).orElse(null);
+        }
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .roleId(user.getRoleId())
+                .departmentId(user.getDepartmentId())
+                .departmentName(deptName)
                 .permissions(permissionStrings)
                 .build();
     }
@@ -135,6 +143,8 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .roleId(user.getRoleId())
+                .departmentId(user.getDepartmentId())
+                .departmentName(department != null ? department.getName() : null)
                 .permissions(permissionStrings)
                 .build();
     }
