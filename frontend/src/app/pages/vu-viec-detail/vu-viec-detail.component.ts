@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { VuViecService } from '../../core/services/vu-viec.service';
 import { ErrorDialogService } from '../../core/services/error-dialog.service';
+import { AuthService } from '../../core/services/auth.service';
 import {
   VuViec, VuViecStatusLog, TrangThai,
   STATUS_TRANSITIONS, TRANG_THAI_LABELS, MUC_DO_LABELS, MucDo,
@@ -19,12 +20,17 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
 })
 export class VuViecDetailComponent implements OnInit {
   private errSvc = inject(ErrorDialogService);
+  private authService = inject(AuthService);
 
   vuViec: VuViec | null = null;
   statusLogs: VuViecStatusLog[] = [];
   loading = true;
   successMsg = '';
   activeTab: 'info' | 'files' | 'log' = 'info';
+  canEditInfo = false;
+  canDelete = false;
+  canExport = false;
+  canChangeStatusInfo = false;
 
   showStatusModal = false;
   allowedNextStatuses: TrangThai[] = [];
@@ -47,6 +53,12 @@ export class VuViecDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const user = this.authService.getUser();
+    this.canEditInfo = user?.permissions?.includes('UPDATE') && user?.roleId !== 1 && user?.roleId !== 2;
+    this.canDelete = user?.permissions?.includes('DELETE') || false;
+    this.canExport = user?.permissions?.includes('EXPORT_ALL') || user?.permissions?.includes('EXPORT_SCOPE') || user?.permissions?.includes('EXPORT_OWN') || false;
+    this.canChangeStatusInfo = user?.permissions?.includes('CHANGE_STATUS') || false;
+    
     const id = this.route.snapshot.paramMap.get('id')!;
     this.loadDetail(id);
   }
@@ -119,7 +131,7 @@ export class VuViecDetailComponent implements OnInit {
 
   canChangeStatus(): boolean {
     if (!this.vuViec) return false;
-    return (STATUS_TRANSITIONS[this.vuViec.trangThai] ?? []).length > 0;
+    return this.canChangeStatusInfo && (STATUS_TRANSITIONS[this.vuViec.trangThai] ?? []).length > 0;
   }
 
   setTab(t: 'info' | 'files' | 'log'): void { this.activeTab = t; }

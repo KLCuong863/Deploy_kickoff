@@ -40,6 +40,7 @@ export interface VuViecStatusLog {
   sangTrangThai: TrangThai;
   lyDo?: string;
   changedBy?: string;
+  changedByUserName?: string;
   changedAt?: string;
 }
 
