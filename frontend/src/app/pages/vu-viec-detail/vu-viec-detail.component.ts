@@ -31,6 +31,7 @@ export class VuViecDetailComponent implements OnInit {
   canDelete = false;
   canExport = false;
   canChangeStatusInfo = false;
+  isSubmitting = false;
 
   showStatusModal = false;
   allowedNextStatuses: TrangThai[] = [];
@@ -99,18 +100,22 @@ export class VuViecDetailComponent implements OnInit {
   }
 
   confirmStatusChange(): void {
+    if (this.isSubmitting) return;
     if (this.statusForm.invalid) {
       this.statusForm.markAllAsTouched();
       return;
     }
+    this.isSubmitting = true;
     const id = this.vuViec!.id!;
     this.vuViecService.changeStatus(id, this.statusForm.value).subscribe({
       next: () => {
+        this.isSubmitting = false;
         this.showToast('Chuyển trạng thái thành công!');
         this.closeStatusModal();
         this.loadDetail(id);
       },
       error: (err) => {
+        this.isSubmitting = false;
         this.errSvc.show({ title: 'CHUYỂN TRẠNG THÁI THẤT BẠI', message: err?.error?.error || 'Đã xảy ra lỗi khi chuyển trạng thái.', code: err?.status });
       },
     });

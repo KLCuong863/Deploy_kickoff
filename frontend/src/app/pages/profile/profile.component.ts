@@ -334,6 +334,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.loading) return;
     const currentUser = this.userSignal();
     if (this.profileForm.valid && currentUser) {
       this.loading = true;

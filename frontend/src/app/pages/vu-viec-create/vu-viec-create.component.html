@@ -119,10 +119,14 @@
 
   <!-- Footer Actions -->
   <div class="form-actions">
-    <button class="sl-btn sl-btn-primary" (click)="cancel()">HUỶ BỎ</button>
-    <button class="sl-btn sl-btn-dark" (click)="save()">
-      <app-icon name="shield" [size]="14" [strokeWidth]="2.5" style="margin-right: 6px;"></app-icon>
-      LƯU VÀO HỆ THỐNG
+    <button class="sl-btn sl-btn-primary" (click)="cancel()" [disabled]="isSubmitting">HUỶ BỎ</button>
+    <button class="sl-btn sl-btn-dark" (click)="save()" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        ĐANG LƯU...
+      } @else {
+        <app-icon name="shield" [size]="14" [strokeWidth]="2.5" style="margin-right: 6px;"></app-icon>
+        LƯU VÀO HỆ THỐNG
+      }
     </button>
   </div>
 </form>

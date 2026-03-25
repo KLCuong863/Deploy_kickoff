@@ -310,8 +310,10 @@
       </div>
 
       <div class="sl-modal-footer">
-        <button class="sl-btn sl-btn-primary" (click)="closeStatusModal()">HỦY BỎ</button>
-        <button class="sl-btn sl-btn-dark" (click)="confirmStatusChange()">✅ XÁC NHẬN CHUYỂN</button>
+        <button class="sl-btn sl-btn-primary" (click)="closeStatusModal()" [disabled]="isSubmitting">HỦY BỎ</button>
+        <button class="sl-btn sl-btn-dark" (click)="confirmStatusChange()" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'ĐANG XỬ LÝ...' : '✅ XÁC NHẬN CHUYỂN' }}
+        </button>
       </div>
     </div>
   </div>

@@ -109,6 +109,7 @@ export class LoginComponent implements OnInit {
   }
 
   private handleLogin() {
+    if (this.loading) return;
     if (this.loginForm.valid) {
       this.loading = true;
       this.authService.login(this.loginForm.value).subscribe({
@@ -132,6 +133,7 @@ export class LoginComponent implements OnInit {
   }
 
   private handleRegister() {
+    if (this.loading) return;
     if (this.registerForm.valid) {
       this.loading = true;
       // Map frontend fields to RegisterRequest DTO

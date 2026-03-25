@@ -28,6 +28,7 @@ export class VuViecCreateComponent implements OnInit {
   selectedMucDo: MucDo | '' = '';
   files: File[] = [];
   currentUser: any;
+  isSubmitting = false;
 
   constructor() {
     this.createForm = this.fb.group({
@@ -62,10 +63,12 @@ export class VuViecCreateComponent implements OnInit {
   }
 
   save(): void {
+    if (this.isSubmitting) return;
     if (this.createForm.invalid || !this.selectedMucDo) {
       this.createForm.markAllAsTouched();
       return;
     }
+    this.isSubmitting = true;
 
     const val = this.createForm.value;
     const payload = {
@@ -89,6 +92,7 @@ export class VuViecCreateComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.isSubmitting = false;
         this.errSvc.show({ title: 'TẠO VỤ VIỆC THẤT BẠI', message: err?.error?.error || 'Đã xảy ra lỗi.', code: err?.status });
       }
     });
