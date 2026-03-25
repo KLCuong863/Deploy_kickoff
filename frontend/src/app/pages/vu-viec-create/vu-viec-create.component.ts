@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { VuViecService } from '../../core/services/vu-viec.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ErrorDialogService } from '../../core/services/error-dialog.service';
 import { MucDo, DanhMucLoaiVuViec } from '../../core/models/vu-viec.model';
 
@@ -19,12 +20,14 @@ export class VuViecCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private vuViecService = inject(VuViecService);
+  private authService = inject(AuthService);
   private errSvc = inject(ErrorDialogService);
 
   createForm: FormGroup;
   loaiOptions: DanhMucLoaiVuViec[] = [];
   selectedMucDo: MucDo | '' = '';
   files: File[] = [];
+  currentUser: any;
 
   constructor() {
     this.createForm = this.fb.group({
@@ -38,6 +41,7 @@ export class VuViecCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
     this.loadLookups();
   }
 
@@ -64,9 +68,25 @@ export class VuViecCreateComponent implements OnInit {
     }
 
     const val = this.createForm.value;
-    this.vuViecService.create({ ...val, muc_do: this.selectedMucDo }).subscribe({
+    const payload = {
+      ...val,
+      muc_do: this.selectedMucDo,
+      don_vi_id: this.currentUser?.departmentId
+    };
+
+    this.vuViecService.create(payload).subscribe({
       next: (created) => {
-        this.router.navigate(['/vu-viec', created.id]);
+        if (this.files.length > 0 && created.id) {
+          this.vuViecService.uploadFiles(created.id, this.files).subscribe({
+            next: () => this.router.navigate(['/vu-viec', created.id]),
+            error: (err) => {
+              this.errSvc.show({ title: 'LỖI ĐÍNH KÈM', message: err?.error?.error || 'Đã tạo vụ việc nhưng tải file thất bại.', code: err?.status });
+              this.router.navigate(['/vu-viec', created.id]);
+            }
+          });
+        } else {
+          this.router.navigate(['/vu-viec', created.id]);
+        }
       },
       error: (err) => {
         this.errSvc.show({ title: 'TẠO VỤ VIỆC THẤT BẠI', message: err?.error?.error || 'Đã xảy ra lỗi.', code: err?.status });

@@ -62,8 +62,8 @@
       </div>
 
       <div class="sl-form-group">
-        <label class="sl-form-label">ĐƠN VỊ XẢY RA</label>
-        <input class="sl-input" type="text" value="Sư đoàn 304" readonly>
+        <label class="sl-form-label">ĐƠN VỊ BÁO CÁO / THỤ LÝ</label>
+        <input class="sl-input" type="text" [value]="currentUser?.departmentName || 'Không xác định'" readonly style="background-color: #0f172a; color: #94a3b8; border-color: #1e293b; cursor: not-allowed;">
       </div>
     </div>
   </section>
@@ -77,15 +77,7 @@
     <div class="sl-section-body">
       <div class="sl-form-group">
         <label class="sl-form-label">MÔ TẢ CHI TIẾT VỤ VIỆC <span class="sl-required">*</span></label>
-        <div class="rich-editor-mock">
-          <div class="editor-toolbar">
-            <button type="button"><b>B</b></button>
-            <button type="button"><i>I</i></button>
-            <button type="button">#</button>
-            <button type="button">🔗</button>
-          </div>
-          <textarea class="sl-textarea" formControlName="mo_ta" rows="8" placeholder="Tường thuật chi tiết diễn biến, các đối tượng liên quan và hậu quả ban đầu..."></textarea>
-        </div>
+        <textarea class="sl-textarea" formControlName="mo_ta" rows="8" placeholder="Tường thuật chi tiết diễn biến, các đối tượng liên quan và hậu quả ban đầu..." style="margin-top: 8px;"></textarea>
       </div>
 
       <div class="sl-form-group">
